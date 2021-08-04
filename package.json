@@ -1,6 +1,6 @@
 {
   "name": "esbuild-plugin-wat",
-  "description": "Plugin for loading .wat files as inline Wasm code",
+  "description": "esbuild plugin for importing WebAssembly files",
   "version": "0.1.0",
   "repository": {
     "type": "git",
