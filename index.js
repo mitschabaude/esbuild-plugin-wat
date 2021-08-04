@@ -2,12 +2,11 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
-import wabt from 'wabt';
-import binaryen from 'binaryen';
 import findCacheDir from 'find-cache-dir';
 
 export {watPlugin as default};
 
+let wabt;
 let cacheDir = findCacheDir({name: 'eslint-plugin-wat', create: true});
 
 function watPlugin({inlineFunctions = false, loader = 'binary'} = {}) {
@@ -18,7 +17,11 @@ function watPlugin({inlineFunctions = false, loader = 'binary'} = {}) {
         let watBytes = await fs.promises.readFile(watPath);
         let wasmBytes = await fromCache(watPath, watBytes, async watBytes => {
           let watText = new TextDecoder().decode(watBytes);
-          let wabtModule = (await wabt()).parseWat(watPath, watText, {
+          if (wabt === undefined) {
+            let createWabt = await import('wabt');
+            wabt = await createWabt();
+          }
+          let wabtModule = wabt.parseWat(watPath, watText, {
             simd: true,
           });
           let bytes = new Uint8Array(wabtModule.toBinary({}).buffer);
@@ -50,7 +53,12 @@ function watPlugin({inlineFunctions = false, loader = 'binary'} = {}) {
   };
 }
 
-function transformInlineFunctions(wasmBytes) {
+let binaryen;
+async function transformInlineFunctions(wasmBytes) {
+  if (binaryen === undefined) {
+    // this import takes forever which is why we make it optional
+    binaryen = await import('binaryen');
+  }
   let module = binaryen.readBinary(wasmBytes);
 
   binaryen.setOptimizeLevel(3);
