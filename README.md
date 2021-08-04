@@ -4,6 +4,10 @@ This is a plugin for [esbuild](https://esbuild.github.io) which allows you to im
 
 Both files types will resolve in a default export which is a `Uint8Array` holding the Wasm binary. It can be directly passed into `WebAssembly.instantiate()` or `WebAssembly.compile()`.
 
+```sh
+yarn add esbuild-plugin-wat
+```
+
 Example:
 
 ```js
