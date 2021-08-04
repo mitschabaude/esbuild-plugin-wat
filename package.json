@@ -1,0 +1,22 @@
+{
+  "name": "npm-ts-template",
+  "description": "No description yet",
+  "version": "0.1.0",
+  "repository": "git@github.com:mitschabaude/npm-ts-template.git",
+  "author": "Gregor <gregor.mitscha-baude@gmx.at>",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "browser": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --emitDeclarationOnly && esbuild index.ts --bundle --outfile=dist/index.js --format=esm --target=es6",
+    "size": "cat dist/index.js | esbuild --minify | gzip | wc -c"
+  },
+  "devDependencies": {
+    "esbuild": ">=0.8.50",
+    "typescript": ">=4.0.0"
+  }
+}
