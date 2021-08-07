@@ -18,7 +18,7 @@ function watPlugin({inlineFunctions = false, loader = 'binary'} = {}) {
         let wasmBytes = await fromCache(watPath, watBytes, async watBytes => {
           let watText = new TextDecoder().decode(watBytes);
           if (wabt === undefined) {
-            let createWabt = await import('wabt');
+            let createWabt = (await import('wabt')).default;
             wabt = await createWabt();
           }
           let wabtModule = wabt.parseWat(watPath, watText, {
@@ -57,7 +57,7 @@ let binaryen;
 async function transformInlineFunctions(wasmBytes) {
   if (binaryen === undefined) {
     // this import takes forever which is why we make it optional
-    binaryen = await import('binaryen');
+    binaryen = (await import('binaryen')).default;
   }
   let module = binaryen.readBinary(wasmBytes);
 
