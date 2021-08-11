@@ -9,7 +9,15 @@ export {watPlugin as default};
 let wabt;
 let cacheDir = findCacheDir({name: 'eslint-plugin-wat', create: true});
 
-function watPlugin({inlineFunctions = false, loader = 'binary'} = {}) {
+function watPlugin({
+  inlineFunctions = false,
+  loader = 'binary',
+  wasmFeatures = {},
+} = {}) {
+  wasmFeatures = {
+    ...defaultWasmFeatures,
+    ...wasmFeatures,
+  };
   return {
     name: 'esbuild-plugin-wat',
     setup(build) {
@@ -21,9 +29,7 @@ function watPlugin({inlineFunctions = false, loader = 'binary'} = {}) {
             let createWabt = (await import('wabt')).default;
             wabt = await createWabt();
           }
-          let wabtModule = wabt.parseWat(watPath, watText, {
-            simd: true,
-          });
+          let wabtModule = wabt.parseWat(watPath, watText, wasmFeatures);
           let bytes = new Uint8Array(wabtModule.toBinary({}).buffer);
           if (inlineFunctions) {
             bytes = transformInlineFunctions(bytes);
@@ -52,6 +58,21 @@ function watPlugin({inlineFunctions = false, loader = 'binary'} = {}) {
     },
   };
 }
+
+const defaultWasmFeatures = {
+  exceptions: true,
+  mutable_globals: true,
+  sat_float_to_int: true,
+  sign_extension: true,
+  simd: true,
+  threads: true,
+  multi_value: true,
+  tail_call: true,
+  bulk_memory: true,
+  reference_types: true,
+  annotations: true,
+  gc: true,
+};
 
 let binaryen;
 async function transformInlineFunctions(wasmBytes) {

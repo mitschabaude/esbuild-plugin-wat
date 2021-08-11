@@ -1,7 +1,7 @@
 {
   "name": "esbuild-plugin-wat",
   "description": "esbuild plugin for importing WebAssembly files",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "repository": {
     "type": "git",
     "url": "https://github.com/mitschabaude/esbuild-plugin-wat"
@@ -30,5 +30,11 @@
     "binaryen": "latest",
     "find-cache-dir": "^3.3.1",
     "wabt": "latest"
+  },
+  "devDependencies": {
+    "esbuild": "^0.12.19"
+  },
+  "scripts": {
+    "test": "node test/build.js test/sum.js && node dist/test/sum.js"
   }
 }

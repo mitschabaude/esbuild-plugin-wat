@@ -36,12 +36,13 @@ build({
 });
 ```
 
-Optionally, you can pass a configuration object which currently supports two options:
+Optionally, you can pass a configuration object which currently supports three options:
 
 ```js
 watPlugin({
   loader: 'file', // what loader esbuild should use to load the .wasm file. Default: 'binary'
   inlineFunctions: true, // optimize .wasm/.wat files by inlining all functions. Default: false
+  wasmFeatures: {simd: false}, // selectively disable wasm features
 });
 ```
 
@@ -49,3 +50,5 @@ The `loader` option directly translates into choosing an [esbuild loader](https:
 For example, instead of `"binary"` (the default) you could use `"base64"` if you want to do the base64-decoding yourself, or `"file"` if you don't want to inline the binary and rather want to fetch it from a separate file.
 
 If `inlineFunctions` is `true`, we use [binaryen](https://github.com/AssemblyScript/binaryen.js) to inline all Wasm functions. This is the only binary optimization so far that I identified as useful when writing raw `.wat`. If you compile to Wasm from a different language, you will most likely have your own optimization pipeline and you can ignore this option.
+
+The `wasmFeatures` are passed to `parseWat()` from `wabt.js`, see **WasmFeatures** in the [wabt API](https://github.com/AssemblyScript/wabt.js#api). Contrary to `wabt.js`, we enable all features by default (since supporting additional language features at compile time is unlikely to break code not using that feature), so passing `true` for a feature does nothing and passing `false` disables it.
