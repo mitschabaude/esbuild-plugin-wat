@@ -3,24 +3,36 @@
 ;; * simple API for returning strings, booleans, byte arrays, nested objects and arrays
 ;; added overhead: 235B gzipped, 335B plain
 (module
+  (global $unnecessary i32 (i32.const 1000))
   (global $offset i32 (i32.const 12))
   
   ;; internal stuff
   (export "memory" (memory $memory))
-  (export "alloc" (func $alloc))
+  ;; (export "alloc" (func $alloc))
   (export "free" (func $initialize))
+
+  (export "return_int" (func $return_int))
+  ;; (export "return_float" (func $return_float))
+  ;; (export "return_bool" (func $return_bool))
+  ;; (export "return_bytes" (func $return_bytes))
+  ;; (export "return_string" (func $return_string))
+
+  (export "alloc_offset" (global $alloc_offset))
 
   (memory $memory 1)
   (global $alloc_offset (mut i32) (i32.const 0))
 
   (start $initialize)
 
+  (func $unnecessary
+  )
+
   (func $initialize
     global.get $offset
     global.set $alloc_offset
   )
 
-  (func $alloc
+  (func $alloc (export "alloc")
     (param $length i32) (result i32)
     (local $pointer i32)
     (local $allocpages i32)
