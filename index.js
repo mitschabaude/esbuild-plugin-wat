@@ -43,8 +43,8 @@ function watPlugin({
       });
 
       build.onLoad({filter: /.wasm$/}, async ({path: wasmPath}) => {
-        let bytes = await fs.promises.readFile(wasmPath);
-        let wasmBytes = await fromCache(wasmPath, bytes, bytes => {
+        let wasmBytes = await fs.promises.readFile(wasmPath);
+        wasmBytes = await fromCache(wasmPath, wasmBytes, bytes => {
           if (inlineFunctions) {
             bytes = transformInlineFunctions(bytes);
           }

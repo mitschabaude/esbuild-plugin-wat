@@ -65,6 +65,13 @@
   resolved "https://registry.yarnpkg.com/@webassemblyjs/utf8/-/utf8-1.11.1.tgz#d1f8b764369e7c6e6bae350e854dec9a59f0a3ff"
   integrity sha512-9kqcxAEdMhiwQkHpkNiorZzqpGrodQQ2IGrHHxCy+Ozng0ofyMA0lTqiLkVs1uzTRejX+/O0EOT7KxqVPuXosQ==
 
+"@webassemblyjs/validation@^1.11.1":
+  version "1.11.1"
+  resolved "https://registry.yarnpkg.com/@webassemblyjs/validation/-/validation-1.11.1.tgz#3565bf99a67ca552deb88320ca10550bdc83949e"
+  integrity sha512-qNByLv/qST8x4CshQ8vUuX/+OebI9gK+FHkGPMnLnwALKFJOG0jIxG8TXaf2L+fVHNyd96qhsZ/GL54G3KTjpg==
+  dependencies:
+    "@webassemblyjs/ast" "1.11.1"
+
 "@webassemblyjs/wasm-gen@^1.11.1":
   version "1.11.1"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/wasm-gen/-/wasm-gen-1.11.1.tgz#86c5ea304849759b7d88c47a32f4f039ae3c8f76"
@@ -201,6 +208,6 @@ semver@^6.0.0:
   integrity sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw==
 
 wabt@latest:
-  version "1.0.23"
-  resolved "https://registry.yarnpkg.com/wabt/-/wabt-1.0.23.tgz#ff8140ee328e119356d2b09d9d6bd0b4373a14ba"
-  integrity sha512-gN1CPmpqDenmNhUmybOCa2ZsE87oTnSZ/eLfNuNsS6753O3EGdB9pNb9ETH5GHHJZeAlxVgzH3MztMCEBiLj/w==
+  version "1.0.24"
+  resolved "https://registry.yarnpkg.com/wabt/-/wabt-1.0.24.tgz#c02e0b5b4503b94feaf4a30a426ef01c1bea7c6c"
+  integrity sha512-8l7sIOd3i5GWfTWciPL0+ff/FK/deVK2Q6FN+MPz4vfUcD78i2M/49XJTwF6aml91uIiuXJEsLKWMB2cw/mtKg==

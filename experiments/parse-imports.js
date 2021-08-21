@@ -8,8 +8,6 @@ import {print} from '@webassemblyjs/wast-printer';
 import {encodeNode, encodeU32} from '@webassemblyjs/wasm-gen';
 // import identifierToIndex from '@webassemblyjs/ast/lib/transform/wast-identifier-to-index/index.js';
 
-console.log(identifier('test'));
-
 main();
 let wabt;
 
@@ -19,7 +17,7 @@ async function main() {
   let watPath = process.argv[2] ?? 'experiments/common.wat';
   let watBytes = await fs.promises.readFile(watPath);
   let watText = new TextDecoder().decode(watBytes);
-  let wabtModule = wabt.parseWat(watPath, watText, wasmFeatures);
+  let wabtModule = wabt.parseWat('', watBytes, wasmFeatures);
   // console.log(wabtModule);
   let wasmBytes = new Uint8Array(
     wabtModule.toBinary({write_debug_names: true}).buffer
