@@ -3,14 +3,17 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import findCacheDir from 'find-cache-dir';
+import {bundleWat} from './lib/parse-imports.js';
 
 export {watPlugin as default};
 
 let wabt;
 let cacheDir = findCacheDir({name: 'eslint-plugin-wat', create: true});
 
+// TODO: bundle .wasm, watchFiles
 function watPlugin({
   inlineFunctions = false,
+  bundle = false,
   loader = 'binary',
   wasmFeatures = {},
 } = {}) {
@@ -24,13 +27,17 @@ function watPlugin({
       build.onLoad({filter: /.wat$/}, async ({path: watPath}) => {
         let watBytes = await fs.promises.readFile(watPath);
         let wasmBytes = await fromCache(watPath, watBytes, async watBytes => {
-          let watText = new TextDecoder().decode(watBytes);
           if (wabt === undefined) {
             let createWabt = (await import('wabt')).default;
             wabt = await createWabt();
           }
-          let wabtModule = wabt.parseWat(watPath, watText, wasmFeatures);
-          let bytes = new Uint8Array(wabtModule.toBinary({}).buffer);
+          let bytes;
+          if (bundle) {
+            bytes = bundleWat(wabt, watPath);
+          } else {
+            let wabtModule = wabt.parseWat(watPath, watBytes, wasmFeatures);
+            bytes = new Uint8Array(wabtModule.toBinary({}).buffer);
+          }
           if (inlineFunctions) {
             bytes = transformInlineFunctions(bytes);
           }
@@ -103,7 +110,7 @@ async function fromCache(key, content, transform) {
 
   try {
     result = await fs.promises.readFile(
-      path.resolve(cacheDir, `${keyHash}.${contentHash}`)
+      path.resolve(cacheDir, `${keyHash}.${contentHash}.wasm`)
     );
   } catch {}
 
@@ -121,7 +128,7 @@ async function fromCache(key, content, transform) {
       )
       .then(() => {
         fs.promises.writeFile(
-          path.resolve(cacheDir, `${keyHash}.${contentHash}`),
+          path.resolve(cacheDir, `${keyHash}.${contentHash}.wasm`),
           result
         );
       });

@@ -3,31 +3,32 @@
 ;; * simple API for returning strings, booleans, byte arrays, nested objects and arrays
 ;; added overhead: 235B gzipped, 335B plain
 (module
-  (global $unnecessary i32 (i32.const 1000))
+  (global $unnecessary_global i32 (i32.const 1000))
   (global $offset i32 (i32.const 12))
   
   ;; internal stuff
   (export "memory" (memory $memory))
-  ;; (export "alloc" (func $alloc))
-  (export "free" (func $initialize))
+  (export "alloc" (func $alloc))
+  (export "free" (func $free))
 
   (export "return_int" (func $return_int))
-  ;; (export "return_float" (func $return_float))
-  ;; (export "return_bool" (func $return_bool))
-  ;; (export "return_bytes" (func $return_bytes))
-  ;; (export "return_string" (func $return_string))
-
-  (export "alloc_offset" (global $alloc_offset))
+  (export "return_float" (func $return_float))
+  (export "return_bool" (func $return_bool))
+  (export "return_bytes" (func $return_bytes))
+  (export "return_string" (func $return_string))
+  (export "new_array" (func $new_array))
+  (export "new_object" (func $new_object))
+  (export "add_entry" (func $add_entry))
 
   (memory $memory 1)
   (global $alloc_offset (mut i32) (i32.const 0))
 
-  (start $initialize)
+  (start $free)
 
-  (func $unnecessary
+  (func $unnecessary_function
   )
 
-  (func $initialize
+  (func $free
     global.get $offset
     global.set $alloc_offset
   )
