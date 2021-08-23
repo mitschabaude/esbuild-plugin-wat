@@ -1,139 +1,222 @@
 import path from 'path';
 import fs from 'fs';
-// import createWabt from 'wabt';
-import AST, {traverse, isNumberLiteral, identifier} from '@webassemblyjs/ast';
+import createWabt from 'wabt';
+import {traverse, isNumberLiteral, identifier} from '@webassemblyjs/ast';
 import {decode} from '@webassemblyjs/wasm-parser';
 import {print} from '@webassemblyjs/wast-printer';
-import {parse} from '@webassemblyjs/wast-parser';
+// import {parse} from '@webassemblyjs/wast-parser';
 
 main();
-let wabt;
 
 async function main() {
-  // wabt = await createWabt();
+  let watPath = process.argv[2] ?? 'experiments/sumwast.wat';
+  let bundle = await bundleWat(watPath);
+  console.log(bundle);
+}
 
-  let watPath = process.argv[2] ?? 'experiments/sum-wast.wat';
-  let watText = await fs.promises.readFile(watPath, {encoding: 'utf-8'});
-  // let wabtModule = wabt.parseWat('', watText, wasmFeatures);
-  // // console.log(wabtModule);
-  // let wasmBytes = new Uint8Array(
-  //   wabtModule.toBinary({write_debug_names: true}).buffer
-  // );
-  // let ast = decode(wasmBytes, {});
-  let ast = parse(watText);
+let wabt;
+async function bundleWat(watPath) {
+  wabt = await createWabt();
+  let absPath = path.resolve('.', watPath);
+  let moduleList = enumerateModules(absPath);
 
-  let moduleName = path.basename(watPath).replace('.wat', '');
+  let entryPoint = moduleList[moduleList.length - 1];
+  entryPoint.imports.add('*');
 
-  let modules = {}; // {[absPath]: {name, imports: Set([export1, export2, ...])}
+  let importMap = {}; // {[modulename_exportname] : [unique id within module]}
+  let bundleAst = {
+    type: 'Program',
+    body: [{type: 'Module', id: null, fields: []}],
+  };
+  let fields = bundleAst.body[0].fields;
 
-  // console.log(print(ast));
+  for (let mod of moduleList) {
+    treeshakeModule(mod.ast, {
+      moduleName: mod.name,
+      imports: mod.imports,
+      isEntryPoint: mod === entryPoint,
+      importMap,
+    });
+    fields.push(...mod.ast.body[0].fields);
+  }
 
-  enumerateImports(ast, modules);
-  treeshakeModule(ast, {
-    moduleName,
-    imports: new Set(['*']),
-    // modules[watPath]?.imports,
-    isEntryPoint: true,
-  });
-
-  console.log('AFTER');
-  let wat = print(ast)
+  // console.log('AFTER');
+  let wat = print(bundleAst)
     .replace(/\(end\)/g, '')
     .replace(/u32/g, 'i32');
-  console.log(wat);
-  // let wabtModule = wabt.parseWat(watPath, wat, {mutable_globals: true});
-  // console.log(wabtModule.toText({foldExprs: false, inlineExport: false}));
-  // binaryen.parseWast(wat);
+  // console.log(wat);
+  let wabtModule = wabt.parseWat('', wat, wasmFeatures);
+  return wabtModule.toText({foldExprs: false, inlineExport: false});
 }
 
-function enumerateImports(ast) {
+let isFileImport = /^(\/|\.\/|\.\.\/)/; // file imports start with '/' or './' or '../'
+
+// returns de-duplicated linear list of imports that can be processed in order
+function enumerateModules(absPath, moduleList) {
+  let dirPath = path.dirname(absPath);
+
+  moduleList = moduleList ?? [];
+  let watText = fs.readFileSync(absPath, {encoding: 'utf8'});
+  let ast = readWat(watText);
+
   traverse(ast, {
-    ModuleImport(path) {
-      console.log(path.node);
+    ModuleImport({node}) {
+      if (!isFileImport.test(node.module)) return;
+      let importAbsPath = path.resolve(dirPath, node.module);
+
+      // if import does not belong to a known module, add it to list
+      if (!moduleList.some(m => m.absPath === importAbsPath)) {
+        enumerateModules(importAbsPath, moduleList);
+      }
+
+      // rewrite import statement to feature unique name
+      let mod = moduleList.find(m => m.absPath === importAbsPath);
+      node.module = './' + mod.name;
+      node.name = `${mod.name}_${node.name}`;
+      mod.imports.add(node.name);
     },
   });
+
+  let baseName = getModuleName(absPath);
+  let i = 1;
+  for (let mod of moduleList) {
+    if (mod.baseName === baseName) i++;
+  }
+  let name = baseName + (i === 1 ? '' : i + '');
+  moduleList.push({absPath, baseName, name, ast, imports: new Set()});
+  return moduleList;
 }
 
-function treeshakeModule(ast, {imports, moduleName, isEntryPoint}) {
+function treeshakeModule(ast, {imports, moduleName, isEntryPoint, importMap}) {
   imports = imports ?? new Set();
   let keepExports = imports;
   let keepAllExports = imports.has('*');
 
+  // console.log('IMPORT MAP', importMap);
+
   // returns modified AST
-  // TODO: only regard exports imported elsewhere
   let {
     body: [{fields}],
   } = ast;
-
   let keep = new Set();
   let traversed = new Set();
 
-  let globals = fields.filter(f => f.type === 'Global');
-  let functions = fields.filter(f => f.type === 'Func');
-  let memories = fields.filter(f => f.type === 'Memory');
+  // traverse globals / functions / memories top-to-bottom
+  // store nodes and normalized ids
 
-  let moduleImports = fields.filter(f => f.type === 'ModuleImport');
+  let globals = []; // i -> node
+  let globalsByName = {}; // id.value -> node
+  let functions = [];
+  let functionsByName = {};
+  let memories = [];
+  let ids = new Map(); // node -> value
 
-  let ids = {
-    m: normalizedIds(moduleName, 'm', memories),
-    f: normalizedIds(moduleName, 'f', functions),
-    g: normalizedIds(moduleName, 'g', globals),
-  };
-  let normalizedId = (type, node) => ids[type].get(node);
-
-  let importedFuncNames = {};
-  let importedGlobalNames = {};
-
-  console.log(ids.g);
-
-  for (let moduleImport of moduleImports) {
-    let prefix = getModuleName(moduleImport.module);
-    let {descr} = moduleImport;
-    if (descr.type === 'Memory') {
-      ids.m.set(descr, getNormalizedId(prefix, 'm', descr, 0));
-    }
-    if (moduleImport.descr.type === 'FuncImportDescr') {
-      importedFuncNames[descr.id.value] = descr;
-      ids.f.set(descr, getNormalizedId(prefix, 'f', descr, 0));
+  for (let node of fields) {
+    switch (node.type) {
+      case 'Global': {
+        let i = globals.length;
+        globals.push(node);
+        let id = getNormalizedId(moduleName, 'g', node, i);
+        ids.set(node, id);
+        globalsByName[id.value] = node;
+        if (node.name) {
+          globalsByName[node.name.value] = node;
+        }
+        break;
+      }
+      case 'Func': {
+        let i = functions.length;
+        functions.push(node);
+        let id = getNormalizedId(moduleName, 'f', node, i);
+        ids.set(node, id);
+        functionsByName[id.value] = node;
+        if (node.name) {
+          functionsByName[node.name.value] = node;
+        }
+        break;
+      }
+      case 'Memory': {
+        let i = memories.length;
+        memories.push(node);
+        let id = getNormalizedId(moduleName, 'm', node, i);
+        ids.set(node, id);
+        break;
+      }
+      // TODO: properly verify that imports exist
+      case 'ModuleImport': {
+        let importModuleName = getModuleName(node.module);
+        let isBundled = isFileImport.test(node.module);
+        let {descr, name} = node;
+        if (isBundled && !importMap[name]) {
+          let modName = node.module.slice(2);
+          let actualName = name.replace(modName + '_', '');
+          throw Error(`"${actualName}" is not exported from ${modName}.wat`);
+        }
+        switch (descr.type) {
+          case 'GlobalType': {
+            let i = globals.length;
+            globals.push(descr);
+            let id = isBundled
+              ? importMap[name]
+              : getNormalizedId(importModuleName, 'g', descr, i);
+            ids.set(descr, id);
+            globalsByName[id.value] = descr;
+            break;
+          }
+          case 'FuncImportDescr': {
+            let i = functions.length;
+            functions.push(descr);
+            let id = isBundled
+              ? importMap[name]
+              : getNormalizedId(importModuleName, 'f', descr, i);
+            ids.set(descr, id);
+            functionsByName[id.value] = descr;
+            if (descr.id) {
+              functionsByName[descr.id.value] = descr;
+            }
+            break;
+          }
+          case 'Memory': {
+            let i = memories.length;
+            memories.push(descr);
+            let id = isBundled
+              ? importMap[name]
+              : getNormalizedId(importModuleName, 'm', descr, i);
+            ids.set(descr, id);
+            break;
+          }
+        }
+      }
     }
   }
-  // console.log(ids.f);
 
-  let globalsByName = {
-    ...byName(globals),
-    ...Object.fromEntries([...ids.g].map(([node, id]) => [id.value, node])),
-  };
-  let functionsByName = {
-    ...byName(functions),
-    ...importedFuncNames,
-    ...Object.fromEntries([...ids.f].map(([node, id]) => [id.value, node])),
-  };
-
-  // console.log(functionsByName);
-
+  let normalizedId = (_type, node) => ids.get(node);
   let getGlobal = id =>
     isNumberLiteral(id) ? globals[id.value] : globalsByName[id.value];
   let getFunction = id =>
     isNumberLiteral(id) ? functions[id.value] : functionsByName[id.value];
 
   function addGlobal(id) {
+    // if (!id?.value) console.log(id);
     let node = getGlobal(id);
+    if (node.type !== 'Global') {
+      return;
+    }
     if (!keep.has(node)) {
       node.name = normalizedId('g', node);
-      console.log('adding global', id.value);
+      // console.log('adding global', id.value);
       keep.add(node);
     }
   }
 
   function traverseFunction(id) {
-    if (!id?.value) console.log(id);
+    // if (!id?.value) console.log(id);
     let node = getFunction(id);
-    // console.log(node);
     if (node.type !== 'Func') return;
 
     if (!keep.has(node)) {
       node.name = normalizedId('f', node);
-      console.log('adding function', id.value);
+      // console.log('adding function', id.value);
       keep.add(node);
     }
     if (traversed.has(node)) return;
@@ -155,15 +238,15 @@ function treeshakeModule(ast, {imports, moduleName, isEntryPoint}) {
   traverse(ast, {
     Memory({node}) {
       node.id = normalizedId('m', node);
-      if (!node.id) console.log(node);
-      console.log('adding memory', node.id.value);
+      // if (!node.id) console.log(node);
+      // console.log('adding memory', node.id.value);
       keep.add(node);
     },
 
     Start({node}) {
       if (!node.index) console.log(node);
       node.index = normalizedId('f', getFunction(node.index));
-      console.log('adding start', node.index.value);
+      // console.log('adding start', node.index.value);
       keep.add(node);
       traverseFunction(node.index);
     },
@@ -174,27 +257,40 @@ function treeshakeModule(ast, {imports, moduleName, isEntryPoint}) {
     // },
 
     ModuleExport(path) {
-      if (!(keepAllExports || keepExports.has(path.node.name))) return;
-      // console.log(path.node)
+      let uniqueName = `${moduleName}_${path.node.name}`;
 
-      if (!path.node.descr.id) console.log(path.node);
+      if (!(keepAllExports || keepExports.has(uniqueName))) return;
+
+      // if (!path.node.descr.id) console.log(path.node);
 
       if (isEntryPoint) {
         // keep exports in module output
-        console.log('adding export', path.node.descr.id.value);
+        // console.log('adding export', uniqueName);
         keep.add(path.node);
       }
 
-      if (path.node.descr.exportType === 'Func') {
-        // console.log(path.node.descr.id);
-        // console.log(getFunction(path.node.descr.id));
-        path.node.descr.id = normalizedId('f', getFunction(path.node.descr.id));
-        // console.log(path.node.descr.id);
-        traverseFunction(path.node.descr.id);
-      }
-      if (path.node.descr.exportType === 'Global') {
-        path.node.descr.id = normalizedId('g', getGlobal(path.node.descr.id));
-        addGlobal(path.node.descr.id);
+      let {descr, name} = path.node;
+      switch (descr.exportType) {
+        case 'Func': {
+          let id = normalizedId('f', getFunction(descr.id));
+          descr.id = id;
+          importMap[`${moduleName}_${name}`] = id;
+          traverseFunction(descr.id);
+          break;
+        }
+        case 'Global': {
+          let id = normalizedId('g', getGlobal(descr.id));
+          descr.id = id;
+          importMap[`${moduleName}_${name}`] = id;
+          addGlobal(descr.id);
+          break;
+        }
+        case 'Mem': {
+          let id = normalizedId('m', memories[descr.id.value]);
+          descr.id = id;
+          importMap[`${moduleName}_${name}`] = id;
+          break;
+        }
       }
     },
   });
@@ -205,42 +301,28 @@ function treeshakeModule(ast, {imports, moduleName, isEntryPoint}) {
   return ast;
 }
 
-function byName(list) {
-  return Object.fromEntries(
-    list.filter(x => x.name?.value).map(x => [x.name.value, x])
-  );
-}
-
 function getNormalizedId(prefix, type, node, index) {
   let stringId = node.name?.value ?? node.id?.value;
   if (stringId) {
     return identifier(`${prefix}_${stringId}`);
   } else {
     return identifier(
-      `${prefix}_${type}${index.toString(16).padStart(2, '0')}`
+      `${prefix}_${type}${index.toString(10).padStart(2, '0')}`
     );
   }
-}
-
-function normalizedIds(prefix, type, list) {
-  let ids = new Map();
-  for (let i = 0; i < list.length; i++) {
-    let x = list[i];
-    ids.set(x, getNormalizedId(prefix, type, x, i));
-  }
-  return ids;
 }
 
 function getModuleName(watPath) {
   return path.basename(watPath).replace('.wat', '');
 }
 
-function joinMaps(map1, map2) {
-  for (let entry of map2) {
-    let [key, value] = entry;
-    map1.set(key, value);
-  }
-  return map1;
+function readWat(watTextOrBytes) {
+  let wabtModule = wabt.parseWat('', watTextOrBytes, wasmFeatures);
+  let wasmBytes = new Uint8Array(
+    wabtModule.toBinary({write_debug_names: true}).buffer
+  );
+  let ast = decode(wasmBytes, {});
+  return ast;
 }
 
 const wasmFeatures = {

@@ -2,7 +2,7 @@
   (import "imports" "log" (func $log (param i32)))
   (import "./common.wat" "alloc" (func $alloc (param i32) (result i32)))
   (import "./common.wat" "free" (func $free (param i32) (param i32)))
-  (import "./common.wat" "offset" (global f64))
+  (import "./common.wat" "alloc_offset" (global f64))
   (import "./common.wat" "memory" (memory 1))
   (global i32 (i32.const 0))
   (global i32 (i32.const 4))
