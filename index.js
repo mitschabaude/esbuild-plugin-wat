@@ -4,6 +4,7 @@ import path from 'path';
 import crypto from 'crypto';
 import findCacheDir from 'find-cache-dir';
 import {bundleWat} from './lib/parse-imports.js';
+import {collectWasmImports} from './lib/collect-wasm-imports.js';
 
 export {watPlugin as default};
 
@@ -21,9 +22,12 @@ function watPlugin({
     ...defaultWasmFeatures,
     ...wasmFeatures,
   };
+
   return {
     name: 'esbuild-plugin-wat',
-    setup(build) {
+    async setup(build) {
+      let wasmImports = collectWasmImports(build.initialOptions.entryPoints);
+
       build.onLoad({filter: /.wat$/}, async ({path: watPath}) => {
         let watBytes = await fs.promises.readFile(watPath);
         let wasmBytes = await fromCache(watPath, watBytes, async watBytes => {
