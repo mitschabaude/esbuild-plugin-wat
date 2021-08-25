@@ -3,8 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import findCacheDir from 'find-cache-dir';
-import {bundleWat} from './lib/parse-imports.js';
-import {collectWasmImports} from './lib/collect-wasm-imports.js';
+import {bundleWat} from './lib/bundle-wat.js';
+// import {collectWasmImports} from './lib/collect-wasm-imports.js';
 
 export {watPlugin as default};
 
@@ -14,7 +14,9 @@ let cacheDir = findCacheDir({name: 'eslint-plugin-wat', create: true});
 // TODO: bundle .wasm, watchFiles
 function watPlugin({
   inlineFunctions = false,
-  bundle = false,
+  bundle = false, // bundle wasm files together based on custom import syntax
+  wrap = false, // not implemented -- import functions directly with import statement
+  treeshakeWasmImports = false, // not implemented -- strip away unused wasm when using wrap
   loader = 'binary',
   wasmFeatures = {},
 } = {}) {
@@ -26,7 +28,10 @@ function watPlugin({
   return {
     name: 'esbuild-plugin-wat',
     async setup(build) {
-      let wasmImports = collectWasmImports(build.initialOptions.entryPoints);
+      if (wrap && treeshakeWasmImports) {
+        // TODO: collect all wasm imports to know what to tree-shake
+        // let wasmImports = collectWasmImports(build.initialOptions.entryPoints);
+      }
 
       build.onLoad({filter: /.wat$/}, async ({path: watPath}) => {
         let watBytes = await fs.promises.readFile(watPath);
