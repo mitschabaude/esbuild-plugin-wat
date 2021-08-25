@@ -242,6 +242,9 @@
       br_if 0
     end
 
+    ;; local.get $sum
+    ;; call $log
+
     local.get $sum
     call $return_int
   )
