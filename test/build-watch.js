@@ -12,6 +12,8 @@ async function main() {
     bundle: true,
     format: 'esm',
 
+    watch: true,
+
     plugins: [watPlugin({bundle: true, ignoreCache: true})],
   });
 }

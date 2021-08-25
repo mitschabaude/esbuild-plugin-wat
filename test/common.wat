@@ -3,6 +3,8 @@
 ;; * simple API for returning strings, booleans, byte arrays, nested objects and arrays
 ;; added overhead: 235B gzipped, 335B plain
 (module
+  (import "imports" "log" (func $log (param i32)))
+
   (global $unnecessary_global i32 (i32.const 1000))
   (global $offset i32 (i32.const 12))
   
@@ -33,7 +35,7 @@
     global.set $alloc_offset
   )
 
-  (func $alloc (export "alloc")
+  (func $alloc
     (param $length i32) (result i32)
     (local $pointer i32)
     (local $allocpages i32)

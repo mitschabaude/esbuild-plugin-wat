@@ -11,12 +11,14 @@ export {watPlugin as default};
 let wabt;
 let cacheDir = findCacheDir({name: 'eslint-plugin-wat', create: true});
 
-// TODO: bundle .wasm, watchFiles
+// TODO: watchFiles
+// TODO: integrate wrap-wasm
 function watPlugin({
   inlineFunctions = false,
   bundle = false, // bundle wasm files together based on custom import syntax
   wrap = false, // not implemented -- import functions directly with import statement
   treeshakeWasmImports = false, // not implemented -- strip away unused wasm when using wrap
+  ignoreCache = false,
   loader = 'binary',
   wasmFeatures = {},
 } = {}) {
@@ -33,39 +35,57 @@ function watPlugin({
         // let wasmImports = collectWasmImports(build.initialOptions.entryPoints);
       }
 
-      build.onLoad({filter: /.wat$/}, async ({path: watPath}) => {
-        let watBytes = await fs.promises.readFile(watPath);
-        let wasmBytes = await fromCache(watPath, watBytes, async watBytes => {
-          if (wabt === undefined) {
-            let createWabt = (await import('wabt')).default;
-            wabt = await createWabt();
-          }
-          let bytes;
-          if (bundle) {
-            bytes = bundleWat(wabt, watPath);
-          } else {
-            let wabtModule = wabt.parseWat(watPath, watBytes, wasmFeatures);
-            bytes = new Uint8Array(wabtModule.toBinary({}).buffer);
-          }
-          if (inlineFunctions) {
-            bytes = transformInlineFunctions(bytes);
-          }
-          return bytes;
-        });
-        return {
-          contents: wasmBytes,
-          loader,
-        };
-      });
+      build.onLoad(
+        {filter: /.wat$/},
+        async ({path: watPath}) => {
+          let watBytes = await fs.promises.readFile(watPath);
+          let wasmBytes = await fromCache(watPath, watBytes, async watBytes => {
+            if (wabt === undefined) {
+              let createWabt = (await import('wabt')).default;
+              wabt = await createWabt();
+            }
+            let bytes;
+            if (bundle) {
+              let {wasm, exportNames} = await bundleWat(wabt, watPath);
+              // TODO: use exportNames to expose info to wasm wrapper
+              bytes = wasm;
+            } else {
+              let wabtModule = wabt.parseWat(watPath, watBytes, wasmFeatures);
+              bytes = new Uint8Array(wabtModule.toBinary({}).buffer);
+            }
+            if (inlineFunctions) {
+              bytes = transformInlineFunctions(bytes);
+            }
+            return bytes;
+          });
+          return {
+            contents: wasmBytes,
+            loader,
+          };
+        },
+        ignoreCache
+      );
 
       build.onLoad({filter: /.wasm$/}, async ({path: wasmPath}) => {
         let wasmBytes = await fs.promises.readFile(wasmPath);
-        wasmBytes = await fromCache(wasmPath, wasmBytes, bytes => {
-          if (inlineFunctions) {
-            bytes = transformInlineFunctions(bytes);
-          }
-          return bytes;
-        });
+        wasmBytes = await fromCache(
+          wasmPath,
+          wasmBytes,
+          async bytes => {
+            if (bundle) {
+              if (wabt === undefined) {
+                wabt = await (await import('wabt')).default();
+              }
+              let {wasm, exportNames} = await bundleWat(wabt, wasmPath);
+              bytes = wasm;
+            }
+            if (inlineFunctions) {
+              bytes = transformInlineFunctions(bytes);
+            }
+            return bytes;
+          },
+          ignoreCache
+        );
         return {
           contents: wasmBytes,
           loader,
@@ -112,7 +132,7 @@ function hash(stuff) {
 }
 
 //  memoize bytes-to-bytes transform
-async function fromCache(key, content, transform) {
+async function fromCache(key, content, transform, ignoreCache) {
   let keyHash = hash(key);
   let contentHash = hash(content);
   let result;
@@ -123,7 +143,7 @@ async function fromCache(key, content, transform) {
     );
   } catch {}
 
-  if (result === undefined) {
+  if (result === undefined || ignoreCache) {
     result = await transform(content);
     // clean old cached files, then write new one
     fs.promises
