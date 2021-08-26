@@ -3,7 +3,7 @@
 ;; * simple API for returning strings, booleans, byte arrays, nested objects and arrays
 ;; added overhead: 235B gzipped, 335B plain
 (module
-  (import "imports" "log" (func $log (param i32)))
+  ;; (import "imports" "log" (func $log (param i32)))
 
   (global $unnecessary_global i32 (i32.const 1000))
   (global $offset i32 (i32.const 12))
@@ -77,6 +77,7 @@
 
   (func $return_int
     (param i32) (result i32)
+    ;; (call $log (local.get 0))
     (call $store8 (global.get $INT))
     (call $store32 (local.get 0))
   )

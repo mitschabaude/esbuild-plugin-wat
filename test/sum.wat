@@ -1,4 +1,6 @@
 (module
+  (import "imports" "log" (func $log (param i32)))
+
   (import "./common.wat" "alloc" (func $alloc (param i32) (result i32)))
   (import "./common.wat" "free" (func $free (param i32 i32)))
   (import "./common.wat" "memory" (memory $memory 1))

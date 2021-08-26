@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import findCacheDir from 'find-cache-dir';
-import {bundleWat} from './lib/bundle-wat.js';
+import {bundleWasm} from './lib/bundle-wasm.js';
 // import {collectWasmImports} from './lib/collect-wasm-imports.js';
 
 export {watPlugin as default};
@@ -11,7 +11,6 @@ export {watPlugin as default};
 let wabt;
 let cacheDir = findCacheDir({name: 'eslint-plugin-wat', create: true});
 
-// TODO: watchFiles
 // TODO: integrate wrap-wasm
 function watPlugin({
   inlineFunctions = false,
@@ -26,6 +25,8 @@ function watPlugin({
     ...defaultWasmFeatures,
     ...wasmFeatures,
   };
+  // don't cache when bundling, otherwise we're stale on updates to imported files
+  ignoreCache ||= bundle;
 
   return {
     name: 'esbuild-plugin-wat',
@@ -35,60 +36,72 @@ function watPlugin({
         // let wasmImports = collectWasmImports(build.initialOptions.entryPoints);
       }
 
-      build.onLoad(
-        {filter: /.wat$/},
-        async ({path: watPath}) => {
-          let watBytes = await fs.promises.readFile(watPath);
-          let wasmBytes = await fromCache(watPath, watBytes, async watBytes => {
+      build.onLoad({filter: /.wat$/}, async ({path: watPath}) => {
+        let watBytes = await fs.promises.readFile(watPath);
+        let {
+          bytes,
+          meta: {watchFiles},
+        } = await fromCache(
+          watPath,
+          watBytes,
+          async watBytes => {
             if (wabt === undefined) {
               let createWabt = (await import('wabt')).default;
               wabt = await createWabt();
             }
-            let bytes;
+            let bytes, watchFiles;
             if (bundle) {
-              let {wasm, exportNames} = await bundleWat(wabt, watPath);
-              // TODO: use exportNames to expose info to wasm wrapper
-              bytes = wasm;
+              let bundleResult = await bundleWasm(wabt, watPath);
+              // TODO: use bundleResult.exportNames to expose info to wasm wrapper
+              bytes = bundleResult.wasm;
+              watchFiles = bundleResult.watchFiles;
             } else {
-              let wabtModule = wabt.parseWat(watPath, watBytes, wasmFeatures);
+              let wabtModule = wabt.parseWat('', watBytes, wasmFeatures);
               bytes = new Uint8Array(wabtModule.toBinary({}).buffer);
             }
             if (inlineFunctions) {
               bytes = transformInlineFunctions(bytes);
             }
-            return bytes;
-          });
-          return {
-            contents: wasmBytes,
-            loader,
-          };
-        },
-        ignoreCache
-      );
-
-      build.onLoad({filter: /.wasm$/}, async ({path: wasmPath}) => {
-        let wasmBytes = await fs.promises.readFile(wasmPath);
-        wasmBytes = await fromCache(
-          wasmPath,
-          wasmBytes,
-          async bytes => {
-            if (bundle) {
-              if (wabt === undefined) {
-                wabt = await (await import('wabt')).default();
-              }
-              let {wasm, exportNames} = await bundleWat(wabt, wasmPath);
-              bytes = wasm;
-            }
-            if (inlineFunctions) {
-              bytes = transformInlineFunctions(bytes);
-            }
-            return bytes;
+            return {bytes, meta: {watchFiles}};
           },
           ignoreCache
         );
         return {
-          contents: wasmBytes,
+          contents: bytes,
           loader,
+          watchFiles,
+        };
+      });
+
+      build.onLoad({filter: /.wasm$/}, async ({path: wasmPath}) => {
+        let wasmBytes = await fs.promises.readFile(wasmPath);
+        let {
+          bytes,
+          meta: {watchFiles},
+        } = await fromCache(
+          wasmPath,
+          wasmBytes,
+          async bytes => {
+            let watchFiles;
+            if (bundle) {
+              if (wabt === undefined) {
+                wabt = await (await import('wabt')).default();
+              }
+              let bundleResult = await bundleWasm(wabt, wasmPath);
+              bytes = bundleResult.wasm;
+              watchFiles = bundleResult.watchFiles;
+            }
+            if (inlineFunctions) {
+              bytes = transformInlineFunctions(bytes);
+            }
+            return {bytes, meta: {watchFiles}};
+          },
+          ignoreCache
+        );
+        return {
+          contents: bytes,
+          loader,
+          watchFiles,
         };
       });
     },
@@ -135,16 +148,25 @@ function hash(stuff) {
 async function fromCache(key, content, transform, ignoreCache) {
   let keyHash = hash(key);
   let contentHash = hash(content);
-  let result;
+  let bytes, meta;
 
   try {
-    result = await fs.promises.readFile(
+    bytes = await fs.promises.readFile(
       path.resolve(cacheDir, `${keyHash}.${contentHash}.wasm`)
     );
+    meta = JSON.parse(
+      await fs.promises.readFile(
+        path.resolve(cacheDir, `${keyHash}.${contentHash}.json`),
+        {encoding: 'utf8'}
+      )
+    );
   } catch {}
+  console.log(ignoreCache);
 
-  if (result === undefined || ignoreCache) {
-    result = await transform(content);
+  if (bytes === undefined || meta === undefined || ignoreCache) {
+    let result = await transform(content);
+    bytes = result.bytes;
+    meta = result.meta;
     // clean old cached files, then write new one
     fs.promises
       .readdir(cacheDir)
@@ -158,9 +180,14 @@ async function fromCache(key, content, transform, ignoreCache) {
       .then(() => {
         fs.promises.writeFile(
           path.resolve(cacheDir, `${keyHash}.${contentHash}.wasm`),
-          result
+          bytes
+        );
+        fs.promises.writeFile(
+          path.resolve(cacheDir, `${keyHash}.${contentHash}.json`),
+          JSON.stringify(meta),
+          {encoding: 'utf8'}
         );
       });
   }
-  return result;
+  return {bytes, meta};
 }
