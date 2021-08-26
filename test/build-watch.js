@@ -14,6 +14,6 @@ async function main() {
 
     watch: true,
 
-    plugins: [watPlugin({bundle: true, ignoreCache: true})],
+    plugins: [watPlugin({bundle: true, wrap: true})],
   });
 }

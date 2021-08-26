@@ -12,6 +12,6 @@ async function main() {
     bundle: true,
     format: 'esm',
 
-    plugins: [watPlugin({bundle: true, ignoreCache: true})],
+    plugins: [watPlugin({bundle: true, wrap: true})],
   });
 }

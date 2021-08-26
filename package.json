@@ -43,6 +43,7 @@
   },
   "scripts": {
     "test": "node test/build.js test/sum.js && node dist/test/sum.js",
+    "test-simple": "node test/build.js test/simple.js && node dist/test/simple.js",
     "test-watch": "node test/build-watch.js test/sum.js & nodemon dist/test/sum.js"
   }
 }

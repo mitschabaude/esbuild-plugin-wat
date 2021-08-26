@@ -1,4 +1,11 @@
-import {sum, avg, double, isSumEven, howIsSum, createArray} from './sum.wat';
+import sumWat, {exportNames} from './sum.wat';
+import {wrap} from '../lib/wrap-wasm.ts';
+
+let {sum, avg, double, isSumEven, howIsSum, createArray} = wrap(sumWat, {
+  exports: exportNames,
+  imports: {log: console.log},
+  maxPersistentMemory: 1e6,
+});
 
 async function main() {
   // let array = new Uint8Array(10);

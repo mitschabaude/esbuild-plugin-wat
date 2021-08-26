@@ -5,12 +5,13 @@ import crypto from 'crypto';
 import findCacheDir from 'find-cache-dir';
 import {bundleWasm} from './lib/bundle-wasm.js';
 import {collectWasmImports} from './lib/collect-wasm-imports.js';
+import wrapWasmCode from './lib/wrap-wasm-code.js';
 
 export {watPlugin as default};
 
 let wabt;
 let cacheDir = findCacheDir({name: 'eslint-plugin-wat', create: true});
-let wasmFilter = /(.wat|.wasm)$/;
+let wasmFilter = /\.(wat|wasm)$/;
 
 // TODO: integrate wrap-wasm
 function watPlugin({
@@ -104,11 +105,22 @@ function watPlugin({
       build.onLoad(
         {filter: /.*/, namespace: 'wasm-stub'},
         async ({path: wasmPath, pluginData: {exportNames}}) => {
-          return {
-            contents: `import wasm from ${JSON.stringify(wasmPath)};
+          let contents;
+          if (wrap && exportNames) {
+            let exportString = exportNames.join(', ');
+            contents = `import wasm from ${JSON.stringify(wasmPath)};
+import {wrap} from '__wrap-wasm';
+let {${exportString}} = wrap(wasm, ${JSON.stringify(exportNames)});
+export {${exportString}};
+`;
+          } else {
+            contents = `import wasm from ${JSON.stringify(wasmPath)};
 let exportNames = ${JSON.stringify(exportNames)};
 export {wasm as default, exportNames};
-`,
+`;
+          }
+          return {
+            contents,
             loader: 'js',
           };
         }
@@ -123,6 +135,13 @@ export {wasm as default, exportNames};
           };
         }
       );
+
+      build.onResolve({filter: /__wrap-wasm$/}, ({path}) => {
+        return {path, namespace: 'wrap-wasm'};
+      });
+      build.onLoad({filter: /.*/, namespace: 'wrap-wasm'}, () => {
+        return {contents: wrapWasmCode, loader: 'js'};
+      });
     },
   };
 }

@@ -3,16 +3,9 @@
 ;; * simple API for returning strings, booleans, byte arrays, nested objects and arrays
 ;; added overhead: 235B gzipped, 335B plain
 (module
-  ;; (import "imports" "log" (func $log (param i32)))
 
-  (global $unnecessary_global i32 (i32.const 1000))
-  (global $offset i32 (i32.const 12))
+  (import "./common.wat" "alloc" (func $alloc (param i32) (result i32)))
   
-  ;; internal stuff
-  (export "memory" (memory $memory))
-  (export "alloc" (func $alloc))
-  (export "free" (func $free))
-
   (export "return_int" (func $return_int))
   (export "return_float" (func $return_float))
   (export "return_bool" (func $return_bool))
@@ -21,51 +14,6 @@
   (export "new_array" (func $new_array))
   (export "new_object" (func $new_object))
   (export "add_entry" (func $add_entry))
-
-  (memory $memory 1)
-  (global $alloc_offset (mut i32) (i32.const 0))
-
-  (start $free)
-
-  (func $unnecessary_function
-  )
-
-  (func $free
-    global.get $offset
-    global.set $alloc_offset
-  )
-
-  (func $alloc
-    (param $length i32) (result i32)
-    (local $pointer i32)
-    (local $allocpages i32)
-    ;; pointer = alloc_offset
-    ;; alloc_offset += length
-    global.get $alloc_offset
-    local.set $pointer
-    global.get $alloc_offset
-    local.get $length
-    i32.add
-    global.set $alloc_offset
-
-    ;; if (((alloc_offset >> 16) + 1) > memory.size) { memory.grow(...) }
-    global.get $alloc_offset
-    i32.const 16
-    i32.shr_u
-    i32.const 1
-    i32.add
-    local.tee $allocpages
-    memory.size
-    i32.gt_u
-    if 
-      local.get $allocpages
-      memory.grow
-      drop
-      ;; call $log
-    end
-
-    local.get $pointer
-  )
 
   (global $INT i32 (i32.const 0))
   (global $FLOAT i32 (i32.const 1))
