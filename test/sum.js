@@ -1,16 +1,8 @@
-import sumWat from './sum.wat';
+import sumWat, {exportNames} from './sum.wat';
 import {wrap} from './wrap-wasm.ts';
 
-let {sum, avg, double, isSumEven, howIsSum, twice, createArray} = wrap(sumWat, {
-  exports: [
-    'sum',
-    'avg',
-    'double',
-    'isSumEven',
-    'howIsSum',
-    'twice',
-    'createArray',
-  ],
+let {sum, avg, double, isSumEven, howIsSum, createArray} = wrap(sumWat, {
+  exports: exportNames,
   imports: {log: console.log},
   maxPersistentMemory: 1e6,
 });
