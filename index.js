@@ -25,7 +25,7 @@ function watPlugin({
     ...defaultWasmFeatures,
     ...wasmFeatures,
   };
-  // don't cache when bundling, otherwise we're stale on updates to imported files
+  // don't cache when bundling, otherwise we're stale on updates to deep imported files
   ignoreCache ||= bundle;
 
   return {
@@ -36,60 +36,28 @@ function watPlugin({
         // let wasmImports = collectWasmImports(build.initialOptions.entryPoints);
       }
 
-      build.onLoad({filter: /.wat$/}, async ({path: watPath}) => {
-        let watBytes = await fs.promises.readFile(watPath);
-        let {
-          bytes,
-          meta: {watchFiles},
-        } = await fromCache(
-          watPath,
-          watBytes,
-          async watBytes => {
-            if (wabt === undefined) {
-              let createWabt = (await import('wabt')).default;
-              wabt = await createWabt();
-            }
-            let bytes, watchFiles;
-            if (bundle) {
-              let bundleResult = await bundleWasm(wabt, watPath);
-              // TODO: use bundleResult.exportNames to expose info to wasm wrapper
-              bytes = bundleResult.wasm;
-              watchFiles = bundleResult.watchFiles;
-            } else {
-              let wabtModule = wabt.parseWat('', watBytes, wasmFeatures);
-              bytes = new Uint8Array(wabtModule.toBinary({}).buffer);
-            }
-            if (inlineFunctions) {
-              bytes = transformInlineFunctions(bytes);
-            }
-            return {bytes, meta: {watchFiles}};
-          },
-          ignoreCache
-        );
-        return {
-          contents: bytes,
-          loader,
-          watchFiles,
-        };
-      });
-
-      build.onLoad({filter: /.wasm$/}, async ({path: wasmPath}) => {
-        let wasmBytes = await fs.promises.readFile(wasmPath);
+      build.onLoad({filter: /(.wat|.wasm)$/}, async ({path: wasmPath}) => {
+        let isWat = wasmPath.endsWith('.wat');
+        let originalBytes = await fs.promises.readFile(wasmPath);
         let {
           bytes,
           meta: {watchFiles},
         } = await fromCache(
           wasmPath,
-          wasmBytes,
+          originalBytes,
           async bytes => {
+            if (wabt === undefined && (isWat || bundle)) {
+              wabt = await (await import('wabt')).default();
+            }
             let watchFiles;
             if (bundle) {
-              if (wabt === undefined) {
-                wabt = await (await import('wabt')).default();
-              }
               let bundleResult = await bundleWasm(wabt, wasmPath);
+              // TODO: use bundleResult.exportNames to expose info to wasm wrapper
               bytes = bundleResult.wasm;
               watchFiles = bundleResult.watchFiles;
+            } else if (isWat) {
+              let wabtModule = wabt.parseWat('', bytes, wasmFeatures);
+              bytes = new Uint8Array(wabtModule.toBinary({}).buffer);
             }
             if (inlineFunctions) {
               bytes = transformInlineFunctions(bytes);
