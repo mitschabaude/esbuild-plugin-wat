@@ -28,7 +28,7 @@ function watPlugin({
     ...wasmFeatures,
   };
   // don't cache when bundling, otherwise we're stale on updates to deep imported files
-  ignoreCache ||= bundle;
+  ignoreCache = ignoreCache || bundle;
 
   const wasmBytes = {};
 

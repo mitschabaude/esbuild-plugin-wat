@@ -1,7 +1,7 @@
 (module
   ;; (import "imports" "log" (func $log (param i32)))
 
-  (import "../lib/common.wat" "alloc" (func $alloc (param i32) (result i32)))
+  (import "../lib/memory.wat" "alloc" (func $alloc (param i32) (result i32)))
 
   (import "../lib/return.wat" "return_int" (func $return_int (param i32) (result i32)))
   (import "../lib/return.wat" "return_float" (func $return_float (param f64) (result i32)))
@@ -11,9 +11,6 @@
   (import "../lib/return.wat" "new_array" (func $new_array (param $length i32) (result i32)))
   (import "../lib/return.wat" "new_object" (func $new_object (param $length i32) (result i32)))
   (import "../lib/return.wat" "add_entry" (func $add_entry (param $offset i32) (param $length i32)))
-
-  (import "../lib/common.wat" "offset" (global $offset i32))
-  (import "../lib/common.wat" "alloc_offset" (global $alloc_offset i32))
 
   (export "sum" (func $sum))
   (export "avg" (func $avg))
@@ -29,12 +26,6 @@
   (global $EVEN_END i32 (i32.const 4))
   (global $NOT_EVEN i32 (i32.const 4))
   (global $NOT_EVEN_END i32 (i32.const 12))
-
-  (start $init)
-  (func $init
-    (global.set $offset (i32.const 12))
-    (global.set $alloc_offset (i32.const 12))
-  )
 
   (func $createArray
     (result i32)

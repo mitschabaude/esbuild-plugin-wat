@@ -3,20 +3,20 @@
 ;; * simple API for returning strings, booleans, byte arrays, nested objects and arrays
 ;; added overhead: 235B gzipped, 335B plain
 (module
-  ;; (import "meta" "data_end" (global i32))
+  ;; this should be provided by build pipeline, marks end of data sections
+  (import "meta" "data_end" (global $alloc_start i32))
   
   (export "memory" (memory $memory))
   (export "alloc" (func $alloc))
   (export "free" (func $free))
-  (export "offset" (global $offset))
-  (export "alloc_offset" (global $alloc_offset))
 
   (memory $memory 1)
-  (global $offset (mut i32) (i32.const 0))
   (global $alloc_offset (mut i32) (i32.const 0))
 
+  (start $free)
+
   (func $free
-    global.get $offset
+    global.get $alloc_start
     global.set $alloc_offset
   )
 

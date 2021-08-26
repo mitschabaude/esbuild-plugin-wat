@@ -4,7 +4,7 @@
 ;; added overhead: 235B gzipped, 335B plain
 (module
 
-  (import "./common.wat" "alloc" (func $alloc (param i32) (result i32)))
+  (import "./memory.wat" "alloc" (func $alloc (param i32) (result i32)))
   
   (export "return_int" (func $return_int))
   (export "return_float" (func $return_float))
