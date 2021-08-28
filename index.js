@@ -17,8 +17,8 @@ let wasmFilter = /\.(wat|wasm)$/;
 function watPlugin({
   inlineFunctions = false,
   bundle = false, // bundle wasm files together based on custom import syntax
-  wrap = false, // not implemented -- import functions directly with import statement
-  treeshakeWasmImports = false, // not implemented -- strip away unused wasm when using wrap
+  wrap = false, // import functions directly with import statement
+  treeshakeWasmImports = wrap, // strip away unused wasm when using wrap
   ignoreCache = false,
   loader = 'binary',
   wasmFeatures = {},
@@ -35,13 +35,9 @@ function watPlugin({
   return {
     name: 'esbuild-plugin-wat',
     async setup(build) {
-      // if (wrap && treeshakeWasmImports) {
-      // TODO: collect all wasm imports to know what to tree-shake
-      // let wasmImports = await collectWasmImports(
-      //   build.initialOptions.entryPoints
-      // );
-      // console.log('wasm imports', wasmImports);
-      // }
+      let wasmImports =
+        treeshakeWasmImports &&
+        (await collectWasmImports(build.initialOptions.entryPoints));
 
       build.onResolve(
         {filter: wasmFilter},
@@ -67,16 +63,21 @@ function watPlugin({
             wasmPath,
             originalBytes,
             async bytes => {
-              if (wabt === undefined && (isWat || bundle)) {
-                wabt = await (await import('wabt')).default();
-              }
               let watchFiles, exportNames;
               if (bundle) {
-                let bundleResult = await bundleWasm(wabt, wasmPath, wrap);
+                let imports = treeshakeWasmImports
+                  ? wasmImports[wasmPath]
+                  : undefined;
+                let bundleResult = await bundleWasm({
+                  path: wasmPath,
+                  wrap,
+                  imports,
+                });
                 bytes = bundleResult.wasm;
                 watchFiles = bundleResult.watchFiles;
                 exportNames = bundleResult.exportNames;
               } else if (isWat) {
+                wabt = wabt ?? (await (await import('wabt')).default());
                 let wabtModule = wabt.parseWat('', bytes, wasmFeatures);
                 bytes = new Uint8Array(wabtModule.toBinary({}).buffer);
               }
