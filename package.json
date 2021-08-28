@@ -44,6 +44,8 @@
   "scripts": {
     "test": "node test/build.js test/sum.js && node dist/test/sum.js",
     "test-simple": "node test/build.js test/simple.js && node dist/test/simple.js",
-    "test-watch": "node test/build-watch.js test/sum.js & nodemon dist/test/sum.js"
+    "test-raw": "node test/build-nobundle.js test/simple-raw.js && node dist/test/simple-raw.js",
+    "test-watch": "node test/build-watch.js test/sum.js & nodemon dist/test/sum.js",
+    "test-manual": "node test/build-nowrap.js test/sum-manual.js && node dist/test/sum-manual.js"
   }
 }

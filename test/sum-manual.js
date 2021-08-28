@@ -1,4 +1,4 @@
-import sumWat, {exportNames} from './sum.wat';
+import sumWat, {exportNames} from './sum-manual.wat';
 import {wrap} from '../lib/wrap-wasm.ts';
 
 let {sum, avg, double, isSumEven, howIsSum, createArray} = wrap(sumWat, {

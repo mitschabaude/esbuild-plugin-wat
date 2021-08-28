@@ -72,7 +72,7 @@ function watPlugin({
               }
               let watchFiles, exportNames;
               if (bundle) {
-                let bundleResult = await bundleWasm(wabt, wasmPath);
+                let bundleResult = await bundleWasm(wabt, wasmPath, wrap);
                 bytes = bundleResult.wasm;
                 watchFiles = bundleResult.watchFiles;
                 exportNames = bundleResult.exportNames;
