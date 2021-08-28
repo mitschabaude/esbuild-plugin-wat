@@ -1,7 +1,7 @@
 {
   "name": "esbuild-plugin-wat",
   "description": "esbuild plugin for importing WebAssembly files",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/mitschabaude/esbuild-plugin-wat"
