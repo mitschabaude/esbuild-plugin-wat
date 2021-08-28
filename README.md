@@ -40,9 +40,10 @@ Optionally, you can pass a configuration object which currently supports three o
 
 ```js
 watPlugin({
-  loader: 'file', // what loader esbuild should use to load the .wasm file. Default: 'binary'
-  inlineFunctions: true, // optimize .wasm/.wat files by inlining all functions. Default: false
+  loader: 'file', // how esbuild should load the .wasm file. Default: 'binary'
+  inlineFunctions: true, // optimize wasm by inlining all functions. Default: false
   wasmFeatures: {simd: false}, // selectively disable wasm features
+  bundle: true // experimental: bundle multiple wat files using import syntax. Default: false
 });
 ```
 
@@ -52,3 +53,21 @@ For example, instead of `"binary"` (the default) you could use `"base64"` if you
 If `inlineFunctions` is `true`, we use [binaryen](https://github.com/AssemblyScript/binaryen.js) to inline all Wasm functions. This is the only binary optimization so far that I identified as useful when writing raw `.wat`. If you compile to Wasm from a different language, you will most likely have your own optimization pipeline and you can ignore this option.
 
 The `wasmFeatures` are passed to `parseWat()` from `wabt.js`, see **WasmFeatures** in the [wabt API](https://github.com/AssemblyScript/wabt.js#api). Contrary to `wabt.js`, we enable all features by default (since supporting additional language features at compile time is unlikely to break code not using that feature), so passing `true` for a feature does nothing and passing `false` disables it.
+
+### Bundling
+
+The experimental `bundle` option allows you to combine multiple wasm/wat files into one. This is achieved with the following import syntax:
+
+```wat
+;; main.wat
+(import "./util.wat" "some_function" (func $f (param i32) (result i32)))
+```
+
+The statement above tells our bundler to look for the file `"./util.wat"` at a path relative to `main.wat`, take the code for `"some_function"` and include it into our bundled wat (the import statement is removed).
+
+Note that this is normal, spec-compliant wasm syntax, which requires two strings to specify an import. The original intended usage is to specify imports that are dynamically supplied by the host runtime. However, here we instead statically link the wasm modules together.
+
+This enables two things:
+
+* Split code into multiple files when writing raw wat
+* When importing .wasm, allows to pack code compiled from different languages into one wasm binary
