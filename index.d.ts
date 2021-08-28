@@ -5,7 +5,7 @@ export default function watPlugin(options?: {
   inlineFunctions?: boolean;
   bundle?: boolean;
   wrap?: boolean;
-  ignoreCache: boolean;
+  ignoreCache?: boolean;
 }): {
   name: 'esbuild-plugin-wat';
   setup: (build: PluginBuild) => void;
