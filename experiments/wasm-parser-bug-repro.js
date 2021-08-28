@@ -13,7 +13,7 @@ let wasmBytes = new Uint8Array([
   // GLOBAL
     0x7f, // type i32
     0x00, // not mutable
-    // initialiation
+    // initialization
     0x41, 0x00, // i32.const 0
     0x0b, // end of initialization
 ]);
