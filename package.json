@@ -31,15 +31,15 @@
     "binaryen": "latest",
     "find-cache-dir": "^3.3.1",
     "parse-imports": "^1.1.0",
-    "wabt": "latest"
-  },
-  "devDependencies": {
+    "wabt": "latest",
     "@webassemblyjs/ast": "^1.11.1",
-    "@webassemblyjs/validation": "^1.11.1",
-    "@webassemblyjs/wasm-gen": "^1.11.1",
     "@webassemblyjs/wasm-parser": "^1.11.1",
     "@webassemblyjs/wast-parser": "^1.11.1",
-    "@webassemblyjs/wast-printer": "^1.11.1",
+    "@webassemblyjs/wast-printer": "^1.11.1"
+  },
+  "devDependencies": {
+    "@webassemblyjs/validation": "^1.11.1",
+    "@webassemblyjs/wasm-gen": "^1.11.1",
     "esbuild": "^0.12.19"
   },
   "scripts": {
