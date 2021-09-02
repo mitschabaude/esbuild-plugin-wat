@@ -1,0 +1,20 @@
+{
+  "version": "v1",
+  "packages": {
+    "@webassemblyjs/wast-printer": {
+      "signature": "5fde216bb28ece6a5b0b0b87169aa21a",
+      "file": true,
+      "replaced": "link:../webassemblyjs/packages/wast-printer"
+    },
+    "@webassemblyjs/wasm-parser": {
+      "signature": "cab56f94b6e9e30cbb7c440a32022ff7",
+      "file": true,
+      "replaced": "link:../webassemblyjs/packages/wasm-parser/"
+    },
+    "@webassemblyjs/ast": {
+      "signature": "3f99ef0d4a7a492ab7f29b089b993db9",
+      "file": true,
+      "replaced": "^1.11.1"
+    }
+  }
+}

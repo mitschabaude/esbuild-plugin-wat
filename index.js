@@ -58,12 +58,12 @@ function watPlugin({
           let originalBytes = await fs.promises.readFile(wasmPath);
           let {
             bytes,
-            meta: {watchFiles, exportNames},
+            meta: {watchFiles, exportNames, windowImports},
           } = await fromCache(
             wasmPath,
             originalBytes,
             async bytes => {
-              let watchFiles, exportNames;
+              let watchFiles, exportNames, windowImports;
               if (bundle) {
                 let imports = treeshakeWasmImports
                   ? wasmImports[wasmPath]
@@ -76,6 +76,7 @@ function watPlugin({
                 bytes = bundleResult.wasm;
                 watchFiles = bundleResult.watchFiles;
                 exportNames = bundleResult.exportNames;
+                windowImports = bundleResult.windowImports;
               } else if (isWat) {
                 wabt = wabt ?? (await (await import('wabt')).default());
                 let wabtModule = wabt.parseWat('', bytes, wasmFeatures);
@@ -84,7 +85,7 @@ function watPlugin({
               if (inlineFunctions) {
                 bytes = transformInlineFunctions(bytes);
               }
-              return {bytes, meta: {watchFiles, exportNames}};
+              return {bytes, meta: {watchFiles, exportNames, windowImports}};
             },
             ignoreCache
           );
@@ -94,8 +95,8 @@ function watPlugin({
           return {
             path: wasmPath,
             namespace: 'wasm-stub',
-            watchFiles,
-            pluginData: {exportNames},
+            watchFiles: watchFiles ?? [wasmPath],
+            pluginData: {exportNames, windowImports},
           };
         }
       );
@@ -105,13 +106,15 @@ function watPlugin({
       // binary itself is imported from a second virtual module.
       build.onLoad(
         {filter: /.*/, namespace: 'wasm-stub'},
-        async ({path: wasmPath, pluginData: {exportNames}}) => {
+        async ({path: wasmPath, pluginData: {exportNames, windowImports}}) => {
           let contents;
           if (wrap && exportNames) {
             let exportString = exportNames.join(', ');
             contents = `import wasm from ${JSON.stringify(wasmPath)};
 import {wrap} from '__wrap-wasm';
-let {${exportString}} = wrap(wasm, ${JSON.stringify(exportNames)});
+let {${exportString}} = wrap(wasm, ${JSON.stringify(
+              exportNames
+            )}, ${JSON.stringify(windowImports)});
 export {${exportString}};
 `;
           } else {

@@ -2,13 +2,11 @@
 # yarn lockfile v1
 
 
-"@webassemblyjs/ast@1.11.1", "@webassemblyjs/ast@^1.11.1":
+"@webassemblyjs/ast@1.11.1", "@webassemblyjs/ast@file:.yalc/@webassemblyjs/ast":
   version "1.11.1"
-  resolved "https://registry.yarnpkg.com/@webassemblyjs/ast/-/ast-1.11.1.tgz#2bfd767eae1a6996f432ff7e8d7fc75679c0b6a7"
-  integrity sha512-ukBh14qFLjxTQNTXocdyksN5QdM28S1CxHt2rdskFyL+xFV7VremuBLVbmCePj+URalXBENx/9Lm7lnhihtCSw==
   dependencies:
     "@webassemblyjs/helper-numbers" "1.11.1"
-    "@webassemblyjs/helper-wasm-bytecode" "1.11.1"
+    "@webassemblyjs/helper-wasm-bytecode" "file:../../.cache/yarn/v6/npm-@webassemblyjs-ast-1.11.1-51710e05-2a9d-462b-b478-f915dc41161b-1630593919517/node_modules/@webassemblyjs/ast/.yalc/@webassemblyjs/helper-wasm-bytecode"
 
 "@webassemblyjs/floating-point-hex-parser@1.11.1":
   version "1.11.1"
@@ -41,10 +39,11 @@
     "@webassemblyjs/helper-api-error" "1.11.1"
     "@xtuc/long" "4.2.2"
 
-"@webassemblyjs/helper-wasm-bytecode@1.11.1":
+"@webassemblyjs/helper-wasm-bytecode@1.11.1", "@webassemblyjs/helper-wasm-bytecode@file:.yalc/@webassemblyjs/ast/.yalc/@webassemblyjs/helper-wasm-bytecode":
   version "1.11.1"
-  resolved "https://registry.yarnpkg.com/@webassemblyjs/helper-wasm-bytecode/-/helper-wasm-bytecode-1.11.1.tgz#f328241e41e7b199d0b20c18e88429c4433295e1"
-  integrity sha512-PvpoOGiJwXeTrSf/qfudJhwlvDQxFgelbMqtq52WWiXC6Xgg1IREdngmPN3bs4RoO83PnL/nFrxucXj1+BX62Q==
+
+"@webassemblyjs/helper-wasm-bytecode@file:.yalc/@webassemblyjs/wasm-parser/.yalc/@webassemblyjs/helper-wasm-bytecode":
+  version "1.11.1"
 
 "@webassemblyjs/ieee754@1.11.1":
   version "1.11.1"
@@ -53,10 +52,8 @@
   dependencies:
     "@xtuc/ieee754" "^1.2.0"
 
-"@webassemblyjs/leb128@1.11.1":
+"@webassemblyjs/leb128@1.11.1", "@webassemblyjs/leb128@file:.yalc/@webassemblyjs/wasm-parser/.yalc/@webassemblyjs/leb128":
   version "1.11.1"
-  resolved "https://registry.yarnpkg.com/@webassemblyjs/leb128/-/leb128-1.11.1.tgz#ce814b45574e93d76bae1fb2644ab9cdd9527aa5"
-  integrity sha512-BJ2P0hNZ0u+Th1YZXJpzW6miwqQUGcIHT1G/sf72gLVD9DZ5AdYTqPNbHZh6K1M5VmKvFXwGSWZADz+qBWxeRw==
   dependencies:
     "@xtuc/long" "4.2.2"
 
@@ -83,16 +80,14 @@
     "@webassemblyjs/leb128" "1.11.1"
     "@webassemblyjs/utf8" "1.11.1"
 
-"@webassemblyjs/wasm-parser@^1.11.1":
+"@webassemblyjs/wasm-parser@file:.yalc/@webassemblyjs/wasm-parser":
   version "1.11.1"
-  resolved "https://registry.yarnpkg.com/@webassemblyjs/wasm-parser/-/wasm-parser-1.11.1.tgz#86ca734534f417e9bd3c67c7a1c75d8be41fb199"
-  integrity sha512-rrBujw+dJu32gYB7/Lup6UhdkPx9S9SnobZzRVL7VcBH9Bt9bCBLEuX/YXOOtBsOZ4NQrRykKhffRWHvigQvOA==
   dependencies:
     "@webassemblyjs/ast" "1.11.1"
     "@webassemblyjs/helper-api-error" "1.11.1"
-    "@webassemblyjs/helper-wasm-bytecode" "1.11.1"
+    "@webassemblyjs/helper-wasm-bytecode" "file:../../.cache/yarn/v6/npm-@webassemblyjs-wasm-parser-1.11.1-aa6117e7-f441-47f5-a440-04dccebcb5c6-1630593919527/node_modules/@webassemblyjs/wasm-parser/.yalc/@webassemblyjs/helper-wasm-bytecode"
     "@webassemblyjs/ieee754" "1.11.1"
-    "@webassemblyjs/leb128" "1.11.1"
+    "@webassemblyjs/leb128" "file:../../.cache/yarn/v6/npm-@webassemblyjs-wasm-parser-1.11.1-aa6117e7-f441-47f5-a440-04dccebcb5c6-1630593919527/node_modules/@webassemblyjs/wasm-parser/.yalc/@webassemblyjs/leb128"
     "@webassemblyjs/utf8" "1.11.1"
 
 "@webassemblyjs/wast-parser@^1.11.1":
@@ -107,10 +102,16 @@
     "@webassemblyjs/helper-fsm" "1.11.1"
     "@xtuc/long" "4.2.2"
 
-"@webassemblyjs/wast-printer@1.11.1", "@webassemblyjs/wast-printer@^1.11.1":
+"@webassemblyjs/wast-printer@1.11.1":
   version "1.11.1"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/wast-printer/-/wast-printer-1.11.1.tgz#d0c73beda8eec5426f10ae8ef55cee5e7084c2f0"
   integrity sha512-IQboUWM4eKzWW+N/jij2sRatKMh99QEelo3Eb2q0qXkvPRISAj8Qxtmw5itwqK+TTkBuUIE45AxYPToqPtL5gg==
+  dependencies:
+    "@webassemblyjs/ast" "1.11.1"
+    "@xtuc/long" "4.2.2"
+
+"@webassemblyjs/wast-printer@file:.yalc/@webassemblyjs/wast-printer":
+  version "1.11.1"
   dependencies:
     "@webassemblyjs/ast" "1.11.1"
     "@xtuc/long" "4.2.2"
@@ -175,6 +176,11 @@ make-dir@^3.0.2:
   integrity sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==
   dependencies:
     semver "^6.0.0"
+
+minimist@^1.2.5:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.5.tgz#67d66014b66a6a8aaa0c083c5fd58df4e4e97602"
+  integrity sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==
 
 p-limit@^2.2.0:
   version "2.3.0"

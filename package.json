@@ -25,17 +25,22 @@
   "files": [
     "index.js",
     "index.d.ts",
-    "lib"
+    "lib",
+    ".yalc"
   ],
+  "bin": {
+    "watbundle": "./bin/watbundle.js"
+  },
   "dependencies": {
+    "@webassemblyjs/ast": "file:.yalc/@webassemblyjs/ast",
+    "@webassemblyjs/wasm-parser": "file:.yalc/@webassemblyjs/wasm-parser",
+    "@webassemblyjs/wast-parser": "^1.11.1",
+    "@webassemblyjs/wast-printer": "file:.yalc/@webassemblyjs/wast-printer",
     "binaryen": "latest",
     "find-cache-dir": "^3.3.1",
+    "minimist": "^1.2.5",
     "parse-imports": "^1.1.0",
-    "wabt": "latest",
-    "@webassemblyjs/ast": "^1.11.1",
-    "@webassemblyjs/wasm-parser": "^1.11.1",
-    "@webassemblyjs/wast-parser": "^1.11.1",
-    "@webassemblyjs/wast-printer": "^1.11.1"
+    "wabt": "latest"
   },
   "devDependencies": {
     "@webassemblyjs/validation": "^1.11.1",
@@ -47,6 +52,7 @@
     "test-simple": "node test/build.js test/simple.js && node dist/test/simple.js",
     "test-raw": "node test/build-nobundle.js test/simple-raw.js && node dist/test/simple-raw.js",
     "test-watch": "node test/build-watch.js test/sum.js & nodemon dist/test/sum.js",
-    "test-manual": "node test/build-nowrap.js test/sum-manual.js && node dist/test/sum-manual.js"
+    "test-manual": "node test/build-nowrap.js test/sum-manual.js && node dist/test/sum-manual.js",
+    "build": "npx esbuild lib/wrap-wasm-import.ts > lib/wrap-wasm-import.js && node lib/code-to-text.js lib/wrap-wasm-import.js > lib/wrap-wasm-code.js"
   }
 }

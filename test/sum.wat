@@ -1,5 +1,5 @@
 (module
-  ;; (import "imports" "log" (func $log (param i32)))
+  (import "window" "console.log" (func $log (param i32)))
 
   (import "../lib/memory.wat" "alloc" (func $alloc (param i32) (result i32)))
 
@@ -234,8 +234,8 @@
       br_if 0
     end
 
-    ;; local.get $sum
-    ;; call $log
+    local.get $sum
+    call $log
 
     local.get $sum
     call $return_int
