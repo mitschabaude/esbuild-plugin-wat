@@ -1,7 +1,7 @@
 {
   "name": "esbuild-plugin-wat",
   "description": "esbuild plugin for importing WebAssembly files",
-  "version": "0.2.3",
+  "version": "0.2.5",
   "repository": {
     "type": "git",
     "url": "https://github.com/mitschabaude/esbuild-plugin-wat"
@@ -32,16 +32,21 @@
     "watbundle": "./bin/watbundle.js"
   },
   "dependencies": {
-    "@webassemblyjs/ast": "file:.yalc/@webassemblyjs/ast",
-    "@webassemblyjs/wasm-parser": "file:.yalc/@webassemblyjs/wasm-parser",
+    "@webassemblyjs/ast": "link:.yalc/@webassemblyjs/ast",
+    "@webassemblyjs/wasm-parser": "link:.yalc/@webassemblyjs/wasm-parser",
     "@webassemblyjs/wast-parser": "^1.11.1",
-    "@webassemblyjs/wast-printer": "file:.yalc/@webassemblyjs/wast-printer",
+    "@webassemblyjs/wast-printer": "link:.yalc/@webassemblyjs/wast-printer",
     "binaryen": "latest",
     "find-cache-dir": "^3.3.1",
     "minimist": "^1.2.5",
     "parse-imports": "^1.1.0",
     "wabt": "latest"
   },
+  "bundledDependencies": [
+    "@webassemblyjs/ast",
+    "@webassemblyjs/wasm-parser",
+    "@webassemblyjs/wast-printer"
+  ],
   "devDependencies": {
     "@webassemblyjs/validation": "^1.11.1",
     "@webassemblyjs/wasm-gen": "^1.11.1",

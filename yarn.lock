@@ -2,11 +2,13 @@
 # yarn lockfile v1
 
 
-"@webassemblyjs/ast@1.11.1", "@webassemblyjs/ast@file:.yalc/@webassemblyjs/ast":
-  version "1.11.1"
-  dependencies:
-    "@webassemblyjs/helper-numbers" "1.11.1"
-    "@webassemblyjs/helper-wasm-bytecode" "file:../../.cache/yarn/v6/npm-@webassemblyjs-ast-1.11.1-51710e05-2a9d-462b-b478-f915dc41161b-1630593919517/node_modules/@webassemblyjs/ast/.yalc/@webassemblyjs/helper-wasm-bytecode"
+"@webassemblyjs/ast@1.11.1":
+  version "0.0.0"
+  uid ""
+
+"@webassemblyjs/ast@link:.yalc/@webassemblyjs/ast":
+  version "0.0.0"
+  uid ""
 
 "@webassemblyjs/floating-point-hex-parser@1.11.1":
   version "1.11.1"
@@ -80,15 +82,9 @@
     "@webassemblyjs/leb128" "1.11.1"
     "@webassemblyjs/utf8" "1.11.1"
 
-"@webassemblyjs/wasm-parser@file:.yalc/@webassemblyjs/wasm-parser":
-  version "1.11.1"
-  dependencies:
-    "@webassemblyjs/ast" "1.11.1"
-    "@webassemblyjs/helper-api-error" "1.11.1"
-    "@webassemblyjs/helper-wasm-bytecode" "file:../../.cache/yarn/v6/npm-@webassemblyjs-wasm-parser-1.11.1-aa6117e7-f441-47f5-a440-04dccebcb5c6-1630593919527/node_modules/@webassemblyjs/wasm-parser/.yalc/@webassemblyjs/helper-wasm-bytecode"
-    "@webassemblyjs/ieee754" "1.11.1"
-    "@webassemblyjs/leb128" "file:../../.cache/yarn/v6/npm-@webassemblyjs-wasm-parser-1.11.1-aa6117e7-f441-47f5-a440-04dccebcb5c6-1630593919527/node_modules/@webassemblyjs/wasm-parser/.yalc/@webassemblyjs/leb128"
-    "@webassemblyjs/utf8" "1.11.1"
+"@webassemblyjs/wasm-parser@link:.yalc/@webassemblyjs/wasm-parser":
+  version "0.0.0"
+  uid ""
 
 "@webassemblyjs/wast-parser@^1.11.1":
   version "1.11.1"
@@ -110,11 +106,9 @@
     "@webassemblyjs/ast" "1.11.1"
     "@xtuc/long" "4.2.2"
 
-"@webassemblyjs/wast-printer@file:.yalc/@webassemblyjs/wast-printer":
-  version "1.11.1"
-  dependencies:
-    "@webassemblyjs/ast" "1.11.1"
-    "@xtuc/long" "4.2.2"
+"@webassemblyjs/wast-printer@link:.yalc/@webassemblyjs/wast-printer":
+  version "0.0.0"
+  uid ""
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
