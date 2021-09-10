@@ -2,101 +2,102 @@
 # yarn lockfile v1
 
 
-"@webassemblyjs/ast@1.11.1", "@webassemblyjs/ast@https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-ast-1.11.1.tgz":
+"@webassemblyjs/ast@https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-ast.tgz":
   version "1.11.1"
-  resolved "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-ast-1.11.1.tgz#4a25bbe48944a1fe2a48a8df51aa3e2a2a7b374d"
+  uid "52e11dc8beb1afb80ec0e0a591a0621eb1f85fc5"
+  resolved "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-ast.tgz#52e11dc8beb1afb80ec0e0a591a0621eb1f85fc5"
   dependencies:
-    "@webassemblyjs/helper-numbers" "1.11.1"
-    "@webassemblyjs/helper-wasm-bytecode" "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-helper-wasm-bytecode-1.11.1.tgz"
+    "@webassemblyjs/helper-numbers" "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-helper-numbers.tgz"
+    "@webassemblyjs/helper-wasm-bytecode" "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-helper-wasm-bytecode.tgz"
 
-"@webassemblyjs/floating-point-hex-parser@1.11.1":
+"@webassemblyjs/ast@https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-ast.tgz":
   version "1.11.1"
-  resolved "https://registry.yarnpkg.com/@webassemblyjs/floating-point-hex-parser/-/floating-point-hex-parser-1.11.1.tgz#f6c61a705f0fd7a6aecaa4e8198f23d9dc179e4f"
-  integrity sha512-iGRfyc5Bq+NnNuX8b5hwBrRjzf0ocrJPI6GWFodBFzmFnyvrQ83SHKhmilCU/8Jv67i4GJZBMhEzltxzcNagtQ==
-
-"@webassemblyjs/helper-api-error@1.11.1":
-  version "1.11.1"
-  resolved "https://registry.yarnpkg.com/@webassemblyjs/helper-api-error/-/helper-api-error-1.11.1.tgz#1a63192d8788e5c012800ba6a7a46c705288fd16"
-  integrity sha512-RlhS8CBCXfRUR/cwo2ho9bkheSXG0+NwooXcc3PAILALf2QLdFyj7KGsKRbVc95hZnhnERon4kW/D3SZpp6Tcg==
-
-"@webassemblyjs/helper-code-frame@1.11.1":
-  version "1.11.1"
-  resolved "https://registry.yarnpkg.com/@webassemblyjs/helper-code-frame/-/helper-code-frame-1.11.1.tgz#223e2026cbfa63ab8e9b26998bb1b3076cf6e86d"
-  integrity sha512-mPd+wiLANX+0WdXre6/nVufpukwfGBzolYCrzx+QtpUUa9FthKTr+mdg0yVWgs9W7zhOE3tCOK/ffqpu4rsJag==
+  resolved "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-ast.tgz#52e11dc8beb1afb80ec0e0a591a0621eb1f85fc5"
   dependencies:
-    "@webassemblyjs/wast-printer" "1.11.1"
+    "@webassemblyjs/helper-numbers" "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-helper-numbers.tgz"
+    "@webassemblyjs/helper-wasm-bytecode" "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-helper-wasm-bytecode.tgz"
 
-"@webassemblyjs/helper-fsm@1.11.1":
+"@webassemblyjs/floating-point-hex-parser@https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-floating-point-hex-parser.tgz":
   version "1.11.1"
-  resolved "https://registry.yarnpkg.com/@webassemblyjs/helper-fsm/-/helper-fsm-1.11.1.tgz#46ceaa84d9533db26bb20c803aec326f29007f91"
-  integrity sha512-k+B+H6RO3f8xDborqpvTS5T5xp43MmytDSJbsbDmuMIN8yhCs7Oyu7+s08noYkDplj2rRlcq3iW9eGMhY7jxmg==
+  resolved "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-floating-point-hex-parser.tgz#f6cc55a2f2a03d62aa445feb091342dc41007193"
 
-"@webassemblyjs/helper-numbers@1.11.1":
+"@webassemblyjs/helper-api-error@https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-helper-api-error.tgz":
   version "1.11.1"
-  resolved "https://registry.yarnpkg.com/@webassemblyjs/helper-numbers/-/helper-numbers-1.11.1.tgz#64d81da219fbbba1e3bd1bfc74f6e8c4e10a62ae"
-  integrity sha512-vDkbxiB8zfnPdNK9Rajcey5C0w+QJugEglN0of+kmO8l7lDb77AnlKYQF7aarZuCrv+l0UvqL+68gSDr3k9LPQ==
+  resolved "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-helper-api-error.tgz#58c5cd90209de9ab26c29e5d6481952e1df651ed"
+
+"@webassemblyjs/helper-code-frame@https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-helper-code-frame.tgz":
+  version "1.11.1"
+  resolved "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-helper-code-frame.tgz#2844a1e63253792307150d8dec0a66558311a606"
   dependencies:
-    "@webassemblyjs/floating-point-hex-parser" "1.11.1"
-    "@webassemblyjs/helper-api-error" "1.11.1"
+    "@webassemblyjs/wast-printer" "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-wast-printer.tgz"
+
+"@webassemblyjs/helper-fsm@https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-helper-fsm.tgz":
+  version "1.11.1"
+  resolved "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-helper-fsm.tgz#216ce71edb44b5e9ad67711fd944862b94984a7f"
+
+"@webassemblyjs/helper-numbers@https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-helper-numbers.tgz":
+  version "1.11.1"
+  resolved "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-helper-numbers.tgz#f3fd4302764818d102ca4a52952fd9ca032341c6"
+  dependencies:
+    "@webassemblyjs/floating-point-hex-parser" "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-floating-point-hex-parser.tgz"
+    "@webassemblyjs/helper-api-error" "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-helper-api-error.tgz"
     "@xtuc/long" "4.2.2"
 
-"@webassemblyjs/helper-wasm-bytecode@https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-helper-wasm-bytecode-1.11.1.tgz":
+"@webassemblyjs/helper-wasm-bytecode@https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-helper-wasm-bytecode.tgz":
   version "1.11.1"
-  resolved "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-helper-wasm-bytecode-1.11.1.tgz#05c5461deaa803ca9c640557156f3b20beebe549"
+  resolved "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-helper-wasm-bytecode.tgz#05c5461deaa803ca9c640557156f3b20beebe549"
 
-"@webassemblyjs/ieee754@1.11.1":
+"@webassemblyjs/ieee754@https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-ieee754.tgz":
   version "1.11.1"
-  resolved "https://registry.yarnpkg.com/@webassemblyjs/ieee754/-/ieee754-1.11.1.tgz#963929e9bbd05709e7e12243a099180812992614"
-  integrity sha512-hJ87QIPtAMKbFq6CGTkZYJivEwZDbQUgYd3qKSadTNOhVY7p+gfP6Sr0lLRVTaG1JjFj+r3YchoqRYxNH3M0GQ==
+  resolved "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-ieee754.tgz#01124950127ebc36d632960bb33ad5f19ca9e902"
   dependencies:
     "@xtuc/ieee754" "^1.2.0"
 
-"@webassemblyjs/leb128@https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-leb128-1.11.1.tgz":
+"@webassemblyjs/leb128@https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-leb128.tgz":
   version "1.11.1"
-  resolved "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-leb128-1.11.1.tgz#da6407218b62fc5e17cddbffad1cb559af20198f"
+  resolved "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-leb128.tgz#da6407218b62fc5e17cddbffad1cb559af20198f"
   dependencies:
     "@xtuc/long" "4.2.2"
 
-"@webassemblyjs/utf8@1.11.1":
+"@webassemblyjs/utf8@https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-utf8.tgz":
   version "1.11.1"
-  resolved "https://registry.yarnpkg.com/@webassemblyjs/utf8/-/utf8-1.11.1.tgz#d1f8b764369e7c6e6bae350e854dec9a59f0a3ff"
-  integrity sha512-9kqcxAEdMhiwQkHpkNiorZzqpGrodQQ2IGrHHxCy+Ozng0ofyMA0lTqiLkVs1uzTRejX+/O0EOT7KxqVPuXosQ==
+  resolved "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-utf8.tgz#1a7a61421c3f7cc112d0bba2c63ad2c8f0c77db8"
 
-"@webassemblyjs/wasm-parser@https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-wasm-parser-1.11.1.tgz":
+"@webassemblyjs/wasm-parser@https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-wasm-parser.tgz":
   version "1.11.1"
-  resolved "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-wasm-parser-1.11.1.tgz#5327b6e242f85ee7afb61d29dd00fdecfbd35827"
+  resolved "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-wasm-parser.tgz#e45ce85e33d7205f41837f1eb78c148000852101"
   dependencies:
-    "@webassemblyjs/ast" "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-ast-1.11.1.tgz"
-    "@webassemblyjs/helper-api-error" "1.11.1"
-    "@webassemblyjs/helper-wasm-bytecode" "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-helper-wasm-bytecode-1.11.1.tgz"
-    "@webassemblyjs/ieee754" "1.11.1"
-    "@webassemblyjs/leb128" "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-leb128-1.11.1.tgz"
-    "@webassemblyjs/utf8" "1.11.1"
+    "@webassemblyjs/ast" "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-ast.tgz"
+    "@webassemblyjs/helper-api-error" "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-helper-api-error.tgz"
+    "@webassemblyjs/helper-wasm-bytecode" "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-helper-wasm-bytecode.tgz"
+    "@webassemblyjs/ieee754" "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-ieee754.tgz"
+    "@webassemblyjs/leb128" "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-leb128.tgz"
+    "@webassemblyjs/utf8" "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-utf8.tgz"
 
-"@webassemblyjs/wast-parser@https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-wast-parser-1.11.1.tgz":
+"@webassemblyjs/wast-parser@https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-wast-parser.tgz":
   version "1.11.1"
-  resolved "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-wast-parser-1.11.1.tgz#878db773ef4068fcdff81c26e7cc91bd6f98e809"
+  resolved "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-wast-parser.tgz#4e4361b1ac2d3cd772e287c847059494ef0bff97"
   dependencies:
-    "@webassemblyjs/ast" "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-ast-1.11.1.tgz"
-    "@webassemblyjs/floating-point-hex-parser" "1.11.1"
-    "@webassemblyjs/helper-api-error" "1.11.1"
-    "@webassemblyjs/helper-code-frame" "1.11.1"
-    "@webassemblyjs/helper-fsm" "1.11.1"
+    "@webassemblyjs/ast" "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-ast.tgz"
+    "@webassemblyjs/floating-point-hex-parser" "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-floating-point-hex-parser.tgz"
+    "@webassemblyjs/helper-api-error" "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-helper-api-error.tgz"
+    "@webassemblyjs/helper-code-frame" "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-helper-code-frame.tgz"
+    "@webassemblyjs/helper-fsm" "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-helper-fsm.tgz"
     "@xtuc/long" "4.2.2"
 
-"@webassemblyjs/wast-printer@1.11.1":
+"@webassemblyjs/wast-printer@https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-wast-printer.tgz":
   version "1.11.1"
-  resolved "https://registry.yarnpkg.com/@webassemblyjs/wast-printer/-/wast-printer-1.11.1.tgz#d0c73beda8eec5426f10ae8ef55cee5e7084c2f0"
-  integrity sha512-IQboUWM4eKzWW+N/jij2sRatKMh99QEelo3Eb2q0qXkvPRISAj8Qxtmw5itwqK+TTkBuUIE45AxYPToqPtL5gg==
+  resolved "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-wast-printer.tgz#5af3fab6357d606187bafac3367c51916371722a"
   dependencies:
-    "@webassemblyjs/ast" "1.11.1"
+    "@webassemblyjs/ast" "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-ast.tgz"
     "@xtuc/long" "4.2.2"
 
-"@webassemblyjs/wast-printer@https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-wast-printer-1.11.1.tgz":
+"@webassemblyjs/wast-printer@https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-wast-printer.tgz":
   version "1.11.1"
-  resolved "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-wast-printer-1.11.1.tgz#420a13f94f7d6288cb9800eb3b23414fa29a792f"
+  uid "5af3fab6357d606187bafac3367c51916371722a"
+  resolved "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-wast-printer.tgz#5af3fab6357d606187bafac3367c51916371722a"
   dependencies:
-    "@webassemblyjs/ast" "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-ast-1.11.1.tgz"
+    "@webassemblyjs/ast" "https://github.com/mitschabaude/webassemblyjs/releases/download/v1.11.1-3/webassemblyjs-ast.tgz"
     "@xtuc/long" "4.2.2"
 
 "@xtuc/ieee754@^1.2.0":
