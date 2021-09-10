@@ -41,12 +41,6 @@
     "parse-imports": "^1.1.0",
     "wabt": "latest"
   },
-  "bundledDependencies": [
-    "@webassemblyjs/ast",
-    "@webassemblyjs/wasm-parser",
-    "@webassemblyjs/wast-parser",
-    "@webassemblyjs/wast-printer"
-  ],
   "devDependencies": {
     "esbuild": "^0.12.19"
   },
