@@ -2,13 +2,12 @@
 # yarn lockfile v1
 
 
-"@webassemblyjs/ast@1.11.1":
-  version "0.0.0"
-  uid ""
-
-"@webassemblyjs/ast@link:.yalc/@webassemblyjs/ast":
-  version "0.0.0"
-  uid ""
+"@webassemblyjs/ast@1.11.1", "@webassemblyjs/ast@https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-ast-1.11.1.tgz":
+  version "1.11.1"
+  resolved "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-ast-1.11.1.tgz#4a25bbe48944a1fe2a48a8df51aa3e2a2a7b374d"
+  dependencies:
+    "@webassemblyjs/helper-numbers" "1.11.1"
+    "@webassemblyjs/helper-wasm-bytecode" "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-helper-wasm-bytecode-1.11.1.tgz"
 
 "@webassemblyjs/floating-point-hex-parser@1.11.1":
   version "1.11.1"
@@ -41,11 +40,9 @@
     "@webassemblyjs/helper-api-error" "1.11.1"
     "@xtuc/long" "4.2.2"
 
-"@webassemblyjs/helper-wasm-bytecode@1.11.1", "@webassemblyjs/helper-wasm-bytecode@file:.yalc/@webassemblyjs/ast/.yalc/@webassemblyjs/helper-wasm-bytecode":
+"@webassemblyjs/helper-wasm-bytecode@https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-helper-wasm-bytecode-1.11.1.tgz":
   version "1.11.1"
-
-"@webassemblyjs/helper-wasm-bytecode@file:.yalc/@webassemblyjs/wasm-parser/.yalc/@webassemblyjs/helper-wasm-bytecode":
-  version "1.11.1"
+  resolved "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-helper-wasm-bytecode-1.11.1.tgz#05c5461deaa803ca9c640557156f3b20beebe549"
 
 "@webassemblyjs/ieee754@1.11.1":
   version "1.11.1"
@@ -54,8 +51,9 @@
   dependencies:
     "@xtuc/ieee754" "^1.2.0"
 
-"@webassemblyjs/leb128@1.11.1", "@webassemblyjs/leb128@file:.yalc/@webassemblyjs/wasm-parser/.yalc/@webassemblyjs/leb128":
+"@webassemblyjs/leb128@https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-leb128-1.11.1.tgz":
   version "1.11.1"
+  resolved "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-leb128-1.11.1.tgz#da6407218b62fc5e17cddbffad1cb559af20198f"
   dependencies:
     "@xtuc/long" "4.2.2"
 
@@ -64,34 +62,22 @@
   resolved "https://registry.yarnpkg.com/@webassemblyjs/utf8/-/utf8-1.11.1.tgz#d1f8b764369e7c6e6bae350e854dec9a59f0a3ff"
   integrity sha512-9kqcxAEdMhiwQkHpkNiorZzqpGrodQQ2IGrHHxCy+Ozng0ofyMA0lTqiLkVs1uzTRejX+/O0EOT7KxqVPuXosQ==
 
-"@webassemblyjs/validation@^1.11.1":
+"@webassemblyjs/wasm-parser@https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-wasm-parser-1.11.1.tgz":
   version "1.11.1"
-  resolved "https://registry.yarnpkg.com/@webassemblyjs/validation/-/validation-1.11.1.tgz#3565bf99a67ca552deb88320ca10550bdc83949e"
-  integrity sha512-qNByLv/qST8x4CshQ8vUuX/+OebI9gK+FHkGPMnLnwALKFJOG0jIxG8TXaf2L+fVHNyd96qhsZ/GL54G3KTjpg==
+  resolved "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-wasm-parser-1.11.1.tgz#5327b6e242f85ee7afb61d29dd00fdecfbd35827"
   dependencies:
-    "@webassemblyjs/ast" "1.11.1"
-
-"@webassemblyjs/wasm-gen@^1.11.1":
-  version "1.11.1"
-  resolved "https://registry.yarnpkg.com/@webassemblyjs/wasm-gen/-/wasm-gen-1.11.1.tgz#86c5ea304849759b7d88c47a32f4f039ae3c8f76"
-  integrity sha512-F7QqKXwwNlMmsulj6+O7r4mmtAlCWfO/0HdgOxSklZfQcDu0TpLiD1mRt/zF25Bk59FIjEuGAIyn5ei4yMfLhA==
-  dependencies:
-    "@webassemblyjs/ast" "1.11.1"
-    "@webassemblyjs/helper-wasm-bytecode" "1.11.1"
+    "@webassemblyjs/ast" "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-ast-1.11.1.tgz"
+    "@webassemblyjs/helper-api-error" "1.11.1"
+    "@webassemblyjs/helper-wasm-bytecode" "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-helper-wasm-bytecode-1.11.1.tgz"
     "@webassemblyjs/ieee754" "1.11.1"
-    "@webassemblyjs/leb128" "1.11.1"
+    "@webassemblyjs/leb128" "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-leb128-1.11.1.tgz"
     "@webassemblyjs/utf8" "1.11.1"
 
-"@webassemblyjs/wasm-parser@link:.yalc/@webassemblyjs/wasm-parser":
-  version "0.0.0"
-  uid ""
-
-"@webassemblyjs/wast-parser@^1.11.1":
+"@webassemblyjs/wast-parser@https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-wast-parser-1.11.1.tgz":
   version "1.11.1"
-  resolved "https://registry.yarnpkg.com/@webassemblyjs/wast-parser/-/wast-parser-1.11.1.tgz#3c7d6f23a1c0578af46d66798bc6264067f80003"
-  integrity sha512-qnd52euxGXBO27fC8SQTqT0HAuDauAk3EJpp1yw68mtdHO6I3YpiRMJK/dvSKU75saT/uRoSgiyfW9vajh7dhA==
+  resolved "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-wast-parser-1.11.1.tgz#878db773ef4068fcdff81c26e7cc91bd6f98e809"
   dependencies:
-    "@webassemblyjs/ast" "1.11.1"
+    "@webassemblyjs/ast" "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-ast-1.11.1.tgz"
     "@webassemblyjs/floating-point-hex-parser" "1.11.1"
     "@webassemblyjs/helper-api-error" "1.11.1"
     "@webassemblyjs/helper-code-frame" "1.11.1"
@@ -106,9 +92,12 @@
     "@webassemblyjs/ast" "1.11.1"
     "@xtuc/long" "4.2.2"
 
-"@webassemblyjs/wast-printer@link:.yalc/@webassemblyjs/wast-printer":
-  version "0.0.0"
-  uid ""
+"@webassemblyjs/wast-printer@https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-wast-printer-1.11.1.tgz":
+  version "1.11.1"
+  resolved "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-wast-printer-1.11.1.tgz#420a13f94f7d6288cb9800eb3b23414fa29a792f"
+  dependencies:
+    "@webassemblyjs/ast" "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-ast-1.11.1.tgz"
+    "@xtuc/long" "4.2.2"
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
@@ -136,14 +125,14 @@ es-module-lexer@0.4.1:
   integrity sha512-ooYciCUtfw6/d2w56UVeqHPcoCFAiJdz5XOkYpv/Txl1HMUozpXjz/2RIQgqwKdXNDPSF1W7mJCFse3G+HDyAA==
 
 esbuild@^0.12.19:
-  version "0.12.19"
-  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.12.19.tgz#ab849766705a5093df5acd8ec2f6ba2159a38a6c"
-  integrity sha512-5NuT1G6THW7l3fsSCDkcPepn24R0XtyPjKoqKHD8LfhqMXzCdz0mrS9HgO6hIhzVT7zt0T+JGbzCqF5AH8hS9w==
+  version "0.12.26"
+  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.12.26.tgz#35f2d58ac3fa4629df24aa4d6fd72feb5522e94b"
+  integrity sha512-YmTkhPKjvTJ+G5e96NyhGf69bP+hzO0DscqaVJTi5GM34uaD4Ecj7omu5lJO+NrxCUBRhy2chONLK1h/2LwoXA==
 
 find-cache-dir@^3.3.1:
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/find-cache-dir/-/find-cache-dir-3.3.1.tgz#89b33fad4a4670daa94f855f7fbe31d6d84fe880"
-  integrity sha512-t2GDMt3oGC/v+BMwzmllWDuJF/xcDtE5j/fCGbqDD7OLuJkj0cfh1YSA5VKPvwMeLFLNDBkwOKZ2X85jGLVftQ==
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/find-cache-dir/-/find-cache-dir-3.3.2.tgz#b30c5b6eff0730731aea9bbd9dbecbd80256d64b"
+  integrity sha512-wXZV5emFEjrridIgED11OoUKLxiYjAcqot/NJdAkOhlJ+vGzwhOAfcG5OX1jP+S0PcjEn8bdMJv+g2jwQ3Onig==
   dependencies:
     commondir "^1.0.1"
     make-dir "^3.0.2"

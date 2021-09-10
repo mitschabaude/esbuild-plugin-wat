@@ -32,10 +32,10 @@
     "watbundle": "./bin/watbundle.js"
   },
   "dependencies": {
-    "@webassemblyjs/ast": "link:.yalc/@webassemblyjs/ast",
-    "@webassemblyjs/wasm-parser": "link:.yalc/@webassemblyjs/wasm-parser",
-    "@webassemblyjs/wast-parser": "^1.11.1",
-    "@webassemblyjs/wast-printer": "link:.yalc/@webassemblyjs/wast-printer",
+    "@webassemblyjs/ast": "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-ast-1.11.1.tgz",
+    "@webassemblyjs/wasm-parser": "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-wasm-parser-1.11.1.tgz",
+    "@webassemblyjs/wast-parser": "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-wast-parser-1.11.1.tgz",
+    "@webassemblyjs/wast-printer": "https://github.com/mitschabaude/webassemblyjs/releases/latest/download/webassemblyjs-wast-printer-1.11.1.tgz",
     "binaryen": "latest",
     "find-cache-dir": "^3.3.1",
     "minimist": "^1.2.5",
@@ -48,8 +48,6 @@
     "@webassemblyjs/wast-printer"
   ],
   "devDependencies": {
-    "@webassemblyjs/validation": "^1.11.1",
-    "@webassemblyjs/wasm-gen": "^1.11.1",
     "esbuild": "^0.12.19"
   },
   "scripts": {
