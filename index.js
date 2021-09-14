@@ -1,7 +1,9 @@
 /* eslint-env node */
-import fs from 'fs';
-import path from 'path';
-import crypto from 'crypto';
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import {createRequire} from 'node:module';
+import {pathToFileURL} from 'node:url';
 import findCacheDir from 'find-cache-dir';
 import {bundleWasm} from './lib/bundle-wasm.js';
 import {collectWasmImports} from './lib/collect-wasm-imports.js';
@@ -12,6 +14,7 @@ export {watPlugin as default};
 let wabt;
 let cacheDir = findCacheDir({name: 'eslint-plugin-wat', create: true});
 let wasmFilter = /\.(wat|wasm)$/;
+let isFileImport = /^(\/|\.\/|\.\.\/)/;
 
 // TODO: integrate wrap-wasm
 function watPlugin({
@@ -41,7 +44,7 @@ function watPlugin({
 
       build.onResolve(
         {filter: wasmFilter},
-        async ({path: wasmPath, namespace, resolveDir}) => {
+        async ({path: wasmPath, namespace, resolveDir, importer}) => {
           if (namespace === 'wasm-stub') {
             return {
               path: wasmPath,
@@ -49,21 +52,24 @@ function watPlugin({
             };
           }
 
-          if (!resolveDir) return; // ignore unresolvable paths
-          wasmPath = path.isAbsolute(wasmPath)
-            ? wasmPath
-            : path.resolve(resolveDir, wasmPath);
+          // if (!resolveDir) return; // ignore unresolvable paths
+
+          // wasmPath = path.isAbsolute(wasmPath)
+          //   ? wasmPath
+          //   : path.resolve(resolveDir, wasmPath);
+          let require = createRequire(pathToFileURL(importer));
+          wasmPath = require.resolve(wasmPath);
 
           let isWat = wasmPath.endsWith('.wat');
           let originalBytes = await fs.promises.readFile(wasmPath);
           let {
             bytes,
-            meta: {watchFiles, exportNames, windowImports},
+            meta: {watchFiles, exportNames, otherImports},
           } = await fromCache(
             wasmPath,
             originalBytes,
             async bytes => {
-              let watchFiles, exportNames, windowImports;
+              let watchFiles, exportNames, otherImports;
               if (bundle) {
                 let imports = treeshakeWasmImports
                   ? wasmImports[wasmPath]
@@ -76,7 +82,7 @@ function watPlugin({
                 bytes = bundleResult.wasm;
                 watchFiles = bundleResult.watchFiles;
                 exportNames = bundleResult.exportNames;
-                windowImports = bundleResult.windowImports;
+                otherImports = bundleResult.imports;
               } else if (isWat) {
                 wabt = wabt ?? (await (await import('wabt')).default());
                 let wabtModule = wabt.parseWat('', bytes, wasmFeatures);
@@ -85,18 +91,31 @@ function watPlugin({
               if (inlineFunctions) {
                 bytes = transformInlineFunctions(bytes);
               }
-              return {bytes, meta: {watchFiles, exportNames, windowImports}};
+              return {bytes, meta: {watchFiles, exportNames, otherImports}};
             },
             ignoreCache
           );
 
           wasmBytes[wasmPath] = bytes;
 
+          let jsImports = {};
+          if (wrap && exportNames) {
+            for (let importPath in otherImports) {
+              if (importPath === 'js') continue;
+              // if (!isFileImport.test(importPath)) continue;
+              // let resolvedPath = path.isAbsolute(importPath)
+              //   ? importPath
+              //   : path.resolve(resolveDir, importPath);
+              jsImports[importPath] = otherImports[importPath];
+              delete otherImports[importPath];
+            }
+          }
+
           return {
             path: wasmPath,
             namespace: 'wasm-stub',
             watchFiles: watchFiles ?? [wasmPath],
-            pluginData: {exportNames, windowImports},
+            pluginData: {exportNames, otherImports, jsImports, resolveDir},
           };
         }
       );
@@ -106,26 +125,53 @@ function watPlugin({
       // binary itself is imported from a second virtual module.
       build.onLoad(
         {filter: /.*/, namespace: 'wasm-stub'},
-        async ({path: wasmPath, pluginData: {exportNames, windowImports}}) => {
+        async ({
+          path: wasmPath,
+          pluginData: {
+            exportNames,
+            otherImports: imports,
+            jsImports,
+            resolveDir,
+          },
+        }) => {
           let contents;
           if (wrap && exportNames) {
             let exportString = exportNames.join(', ');
+            let jsImportStrings = '';
+            let importString = '{ ';
+            for (let importPath in jsImports) {
+              let importListString = jsImports[importPath].join(', ');
+              let importObjString =
+                '{' +
+                jsImports[importPath].map(s => `'${s}': ${s}`).join(', ') +
+                '},';
+              jsImportStrings += `\nimport {${importListString}} from '${importPath}';`;
+              importString += `'${importPath}': ${importObjString}`;
+            }
+            for (let importPath in imports) {
+              let importListString =
+                '{' +
+                imports[importPath].map(s => `'${s}': '${s}'`).join(', ') +
+                '},';
+              importString += `'${importPath}': ${importListString}`;
+            }
+            importString += ' }';
             contents = `import wasm from ${JSON.stringify(wasmPath)};
-import {wrap} from '__wrap-wasm';
-let {${exportString}} = wrap(wasm, ${JSON.stringify(
+              import {wrap} from '__wrap-wasm';${jsImportStrings}
+              let {${exportString}} = wrap(wasm, ${JSON.stringify(
               exportNames
-            )}, ${JSON.stringify(windowImports)});
-export {${exportString}};
-`;
+            )}, ${importString});
+              export {${exportString}};\n`;
           } else {
             contents = `import wasm from ${JSON.stringify(wasmPath)};
-let exportNames = ${JSON.stringify(exportNames)};
-export {wasm as default, exportNames};
-`;
+              let exportNames = ${JSON.stringify(exportNames)};
+              let imports = ${JSON.stringify(imports)};
+              export {wasm as default, exportNames, imports};\n`;
           }
           return {
             contents,
             loader: 'js',
+            resolveDir,
           };
         }
       );

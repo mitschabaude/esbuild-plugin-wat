@@ -1,5 +1,6 @@
 (module
-  (import "window" "console.log" (func $log (param i32)))
+  (import "./sum-inner-import.js" "log" (func $log (param i32)))
+  (import "js" "x => console.log(x)" (func $log1 (param i32)))
 
   (import "../lib/memory.wat" "alloc" (func $alloc (param i32) (result i32)))
 

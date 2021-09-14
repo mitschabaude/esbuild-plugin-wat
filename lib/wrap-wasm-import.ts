@@ -13,18 +13,27 @@ let decoder = new TextDecoder();
 function wrap(
   wasmCode: Uint8Array,
   exports: string[],
-  windowImports = [] as string[]
+  imports: {
+    window: WebAssembly.ModuleImports;
+    js: WebAssembly.ModuleImports;
+  } & WebAssembly.Imports
 ): Record<string, WasmFunction> {
   let id = currentId++;
-  let imports = {};
-  for (let importStr of windowImports) {
-    let value = globalThis;
-    for (let key of importStr.split('.')) {
-      value = value[key];
+  // if (imports.window) {
+  //   for (let importStr in imports.window) {
+  //     let value = globalThis as never;
+  //     for (let key of importStr.split('.')) {
+  //       value = value[key];
+  //     }
+  //     imports.window[importStr] = value as WebAssembly.ImportValue;
+  //   }
+  // }
+  if (imports.js) {
+    for (let importStr in imports.js) {
+      imports.js[importStr] = (0, eval)(importStr);
     }
-    imports[importStr] = value;
   }
-  let instantiated = WebAssembly.instantiate(wasmCode, {window: imports});
+  let instantiated = WebAssembly.instantiate(wasmCode, imports);
   modules[id] = {
     modulePromise: instantiated.then(i => i.module),
     instancePromise: instantiated.then(i => i.instance),

@@ -1,4 +1,6 @@
-import {sum, avg, double, isSumEven, howIsSum, createArray} from './sum.wat';
+import sum from './sum-import';
+import minimist from 'minimist';
+import {avg, double, isSumEven, howIsSum, createArray} from './sum.wat';
 
 async function main() {
   // let array = new Uint8Array(10);
