@@ -27,6 +27,8 @@ var {instance} = await WebAssembly.instantiate(example_default);
 ## Usage
 
 ```js
+// esbuild.config.js // Or:
+// esbuild.config.mjs // Use if you get a set "type": "module" error
 import {build} from 'esbuild';
 import watPlugin from 'esbuild-plugin-wat';
 
